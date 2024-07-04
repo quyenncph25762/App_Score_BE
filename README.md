@@ -1,0 +1,3 @@
+- BE su dung mysql 
+- lenh chay: npm run start
+- express
