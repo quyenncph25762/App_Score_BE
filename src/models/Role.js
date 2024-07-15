@@ -21,12 +21,12 @@ const RoleModle = {
     connection.query(query, values, callback);
   },
   deleteRole: (id, callback) => {
-    const query = "UPDATE role SET IsDeleted = 1 WHERE _id IN(?)";
-    connection.query(query, id, callback);
+    const query = "UPDATE role SET IsDeleted = 1 WHERE _id IN (?)";
+    connection.query(query, [id], callback);
   },
   restoreRole: (id, callback) => {
-    const query = "UPDATE role SET IsDeleted = 0 WHERE _id IN(?)";
-    connection.query(query, id, callback);
+    const query = "UPDATE role SET IsDeleted = 0 WHERE _id IN (?)";
+    connection.query(query, [id], callback);
   },
   getTrashRole: (callback) => {
     const query = "SELECT * FROM role WHERE IsDeleted = 1";

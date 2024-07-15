@@ -17,6 +17,6 @@ router.patch("/:id/delete-role", Role.deleteRole);
 router.patch("/:id/restore", Role.restoreRole);
 //delete all select
 router.patch("/delete-selected-roles", Role.deleteAllSelectedRoles);
-//restore one
+//restore all selected
 router.patch("/restore-selected-roles", Role.restoreAllSelectedRoles);
 export default router;

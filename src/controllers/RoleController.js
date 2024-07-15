@@ -78,8 +78,10 @@ class RoleController {
   }
   //restore all selected
   restoreAllSelectedRoles(req, res) {
-    const id = req.body;
-    RoleModle.restoreRole(id, (err, results) => {
+    // 1 mảng ids
+    const ids = req.body;
+    let idString = ids.map(String);
+    RoleModle.restoreRole(idString, (err, results) => {
       if (err) {
         console.log("Erorr", err);
       } else {
@@ -104,9 +106,10 @@ class RoleController {
   }
   //delete all selected
   deleteAllSelectedRoles(req, res) {
-    // 1 mảng id
-    const id = req.body;
-    RoleModle.deleteRole(id, (err, results) => {
+    // 1 mảng ids
+    const ids = req.body;
+    let idString = ids.map(String);
+    RoleModle.deleteRole(idString, (err, results) => {
       if (err) {
         console.log("Erorr", err);
       } else {
