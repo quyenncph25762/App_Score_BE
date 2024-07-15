@@ -1,11 +1,12 @@
-const express = require('express');
-const port = 3000;
-const app = express()
+const app = express();
+import route from "./routers";
+import express from "express";
+import db from "../src/config/db";
+import dotenv from "dotenv";
+dotenv.config();
+app.use(express.json());
 
-app.use("/", () => {
-    console.log("hello word")
-})
+route(app);
+db.connection;
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
-});
+export const viteNodeApp = app;
