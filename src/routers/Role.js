@@ -11,8 +11,12 @@ router.get("/trash-roles", Role.getAllTrashRoles);
 router.post("/create-role", Role.createRole);
 //update
 router.patch("/:id/role", Role.updateRole);
-//delete
+//delete one
 router.patch("/:id/delete-role", Role.deleteRole);
-//restore
-router.patch("/:id/restore", Role.restoreRoles);
+//restore one
+router.patch("/:id/restore", Role.restoreRole);
+//delete all select
+router.patch("/delete-selected-roles", Role.deleteAllSelectedRoles);
+//restore one
+router.patch("/restore-selected-roles", Role.restoreAllSelectedRoles);
 export default router;
