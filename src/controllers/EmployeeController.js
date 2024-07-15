@@ -14,10 +14,7 @@ class EmployeeController {
           console.log(process.env.SECRET);
           const data = results[0];
           const token = jwt.sign({ _id: data._id }, process.env.SECRET);
-          res.status(200).json({
-            messager: "Đăng nhập thành công",
-            token: token,
-          });
+          res.status(200).json(token);
         } else {
           res.json({
             messager: "Đăng nhập thất bại",
@@ -31,10 +28,7 @@ class EmployeeController {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({
-          messager: "Get all data ",
-          data: results,
-        });
+        res.status(200).json(results);
       }
     });
   }

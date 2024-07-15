@@ -5,10 +5,7 @@ class EmployeeController {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({
-          message: "Get data success",
-          data: results,
-        });
+        res.status(200).json(results);
       }
     });
   }
@@ -18,10 +15,7 @@ class EmployeeController {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({
-          message: "Get data success",
-          data: results,
-        });
+        res.status(200).json(results);
       }
     });
   }
@@ -31,10 +25,7 @@ class EmployeeController {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({
-          message: "Get data success",
-          data: results,
-        });
+        res.status(200).json(results);
       }
     });
   }
@@ -43,10 +34,7 @@ class EmployeeController {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({
-          message: "Get data success",
-          data: results,
-        });
+        res.status(200).json(results);
       }
     });
   }
@@ -55,10 +43,7 @@ class EmployeeController {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({
-          message: "Get data success",
-          data: results,
-        });
+        res.status(200).json(results);
       }
     });
   }
@@ -67,10 +52,7 @@ class EmployeeController {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({
-          message: "Get data success",
-          data: results,
-        });
+        res.status(200).json(results);
       }
     });
   }

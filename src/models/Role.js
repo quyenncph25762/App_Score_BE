@@ -6,6 +6,10 @@ const RoleModle = {
     const query = "SELECT * FROM role WHERE IsDeleted = 0";
     connection.query(query, callback);
   },
+  getOneRole: (id, callback) => {
+    const query = "SELECT * FROM role WHERE IsDeleted = 0 AND _id = ?";
+    connection.query(query, id, callback);
+  },
   creatRole: (role, callback) => {
     const query = "INSERT INTO role (NameRole,Note) VALUES(?,?)";
     const values = [role.NameRole, role.Note];
@@ -17,8 +21,16 @@ const RoleModle = {
     connection.query(query, values, callback);
   },
   deleteRole: (id, callback) => {
-    const query = "UPDATE role SET IsDeleted = 1 WHERE _id = ?";
+    const query = "UPDATE role SET IsDeleted = 1 WHERE _id IN(?)";
     connection.query(query, id, callback);
+  },
+  restoreRole: (id, callback) => {
+    const query = "UPDATE role SET IsDeleted = 0 WHERE _id IN(?)";
+    connection.query(query, id, callback);
+  },
+  getTrashRole: (callback) => {
+    const query = "SELECT * FROM role WHERE IsDeleted = 1";
+    connection.query(query, callback);
   },
   /// permission_role
   getAllPermission: (callback) => {

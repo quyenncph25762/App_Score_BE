@@ -5,10 +5,27 @@ class RoleController {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({
-          messager: "Get data success",
-          data: results,
-        });
+        res.status(200).json(results);
+      }
+    });
+  }
+  getAllTrashRoles(req, res) {
+    RoleModle.getTrashRole((err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  }
+  getOneRole(req, res) {
+    const id = req.params.id;
+    RoleModle.getOneRole(id, (err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        const result = results[0];
+        res.status(200).json(result);
       }
     });
   }
@@ -42,6 +59,18 @@ class RoleController {
       } else {
         res.status(200).json({
           messager: "Chỉnh sửa Role thành công",
+        });
+      }
+    });
+  }
+  restoreRoles(req, res) {
+    const id = req.params.id;
+    RoleModle.restoreRole(id, (err, results) => {
+      if (err) {
+        console.log("Erorr", err);
+      } else {
+        res.status(200).json({
+          messager: "Khôi phục thành công",
         });
       }
     });
