@@ -4,7 +4,7 @@ import Employee from "../models/Employee";
 class EmployeeController {
   login(req, res) {
     const UserName = req.body.UserName;
-    const PassWord = req.body.PassWord;
+    const PassWord = req.body.Password;
     const DistrictId = req.body.DistrictId;
     Employee.getOneEmloyee(UserName, PassWord, DistrictId, (err, results) => {
       if (err) {
