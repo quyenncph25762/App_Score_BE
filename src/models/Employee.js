@@ -135,8 +135,8 @@ const Employee = {
   },
   // xóa employee
   deleteEmloyee: (id, callback) => {
-    const query = "UPDATE employee SET IsDeleted = 1";
-    connection.query(query, id, callback);
+    const query = "UPDATE employee SET IsDeleted = 1 WHERE _id IN(?)";
+    connection.query(query, [id], callback);
   },
   // create info_employee
   createInfo_Employee: (info, callback) => {

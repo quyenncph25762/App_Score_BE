@@ -9,6 +9,11 @@ router.get("/getAll-info-Employee", Employee.getAll_InfoEmployee);
 router.post("/create-employee", Employee.createEmployee);
 
 router.patch("/:id/update-employee", Employee.updateEmployee);
+
+//delete one
+router.patch("/delete-employee", Employee.deleteOneEmployee);
+//delete selected
+router.patch("/delete-all-selected-employee", Employee.deleteAllSelected_Employee);
 //login
 router.post("/login", Employee.login);
 export default router;

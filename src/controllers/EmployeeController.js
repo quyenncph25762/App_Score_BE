@@ -152,5 +152,26 @@ class EmployeeController {
       }
     });
   }
+  deleteOneEmployee(req, res) {
+    const id = req.params.id;
+    Employee.deleteEmloyee(id, (err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json({ messager: "Xóa Role thành công" });
+      }
+    });
+  }
+  deleteAllSelected_Employee(req, res) {
+    const ids = req.body;
+    let idString = ids.map(String);
+    Employee.deleteEmloyee(idString, (err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json({ messager: "Xóa Role thành công" });
+      }
+    });
+  }
 }
 export default new EmployeeController();
