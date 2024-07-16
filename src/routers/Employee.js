@@ -10,6 +10,8 @@ router.post("/create-employee", Employee.createEmployee);
 
 router.patch("/:id/update-employee", Employee.updateEmployee);
 
+//get one
+router.get("/getOne-Employee",Employee.getOneById)
 //delete one
 router.patch("/delete-employee", Employee.deleteOneEmployee);
 //delete selected

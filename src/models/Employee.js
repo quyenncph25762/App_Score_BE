@@ -65,6 +65,11 @@ const Employee = {
       "SELECT * FROM employee WHERE IsDeleted = 0 AND Email = ? AND UserName = ?";
     connection.query(query, [Email, UserName], callback);
   },
+  // lấy theo id
+  getOneEmployeeById: (id, callback) => {
+    const query = "SELECT * FROM employee WHERE IsDeleted = 0 AND _id = ?";
+    connection.query(query, id, callback);
+  },
   //
   getEmployeeBy_IdAndPassword: (id, PassWord, callback) => {
     const query =

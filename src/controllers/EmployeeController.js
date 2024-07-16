@@ -22,10 +22,21 @@ class EmployeeController {
       }
     });
   }
+  getOneById(req, res) {
+    const id = req.params.id;
+    Employee.getOneEmployeeById(id, (err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        const data = results[0];
+        res.status(200).json(data);
+      }
+    });
+  }
   getAll(req, res) {
     const searchName = req.query.searchName || "";
     const page = parseInt(req.query.page) || 1; // Trang hiện tại
-    const pageSize = 8; // Kích thước trang
+    const pageSize = 2; // Kích thước trang
     const startIndex = (page - 1) * pageSize;
     const endIndex = page * pageSize;
     Employee.getAllEmployee(searchName, (err, data) => {
