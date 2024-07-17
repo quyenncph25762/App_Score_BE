@@ -5,12 +5,16 @@ const Employee = {
   getAllEmployee: (searchName, callback) => {
     const query = `SELECT employee.*,
     city.Name AS NameCity,
-    district.Name AS NameAddress,
-    ward.Name AS NameWard
+    district.Name AS NameDistrict,
+    ward.Name AS NameWard,
+    object.NameObject AS ObjectName,
+    role.NameRole AS RoleName
     FROM employee
     JOIN city ON employee.cityId = city._id
     JOIN district ON employee.DistrictId = district._id
     JOIN ward ON employee.WardId = ward._id
+    JOIN object ON employee.ObjectId = object._id
+    JOIN role ON employee.RoleId = role._id
     WHERE employee.IsDeleted = 0 AND employee.FullName LIKE ?
     `;
     const values = "%" + searchName + "%";
@@ -67,7 +71,21 @@ const Employee = {
   },
   // lấy theo id
   getOneEmployeeById: (id, callback) => {
-    const query = "SELECT * FROM employee WHERE IsDeleted = 0 AND _id = ?";
+    const query = `
+    SELECT employee.*,
+    city.Name AS NameCity,
+    district.Name AS NameDistrict,
+    ward.Name AS NameWard,
+    object.NameObject AS ObjectName,
+    role.NameRole AS RoleName
+    FROM employee
+    JOIN city ON employee.cityId = city._id
+    JOIN district ON employee.DistrictId = district._id
+    JOIN ward ON employee.WardId = ward._id
+    JOIN object ON employee.ObjectId = object._id
+    JOIN role ON employee.RoleId = role._id
+    WHERE employee.IsDeleted = 0 AND employee._id = ?
+    `;
     connection.query(query, id, callback);
   },
   //
@@ -91,7 +109,7 @@ const Employee = {
   // create
   createEmployee: (Employee, callback) => {
     const query =
-      "INSERT INTO employee (Code,RoleId,CityId,DistrictId,WardId,ApartmentId,Address,Avatar,FullName,DoB,Gender,Email,Phone,UserName,Password,CreatorUserId,ObjectId) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO employee (Code,RoleId,CityId,DistrictId,WardId,ApartmentId,Customer,Avatar,FullName,Email,Phone,UserName,Password,CreatorUserId,ObjectId) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     const values = [
       Employee.Code,
       Employee.RoleId,
@@ -99,11 +117,9 @@ const Employee = {
       Employee.DistrictId,
       Employee.WardId,
       Employee.ApartmentId,
-      Employee.Address,
+      Employee.Customer,
       Employee.Avatar,
       Employee.FullName,
-      Employee.DoB,
-      Employee.Gender,
       Employee.Email,
       Employee.Phone,
       Employee.UserName,
@@ -116,18 +132,16 @@ const Employee = {
   // update
   updateEmployee: (id, Employee, callback) => {
     const query =
-      "UPDATE employee SET RoleId = ?,CityId = ?,DistrictId = ?,WardId = ?,ApartmentId = ?,Address = ?,Avatar = ?,FullName = ?,DoB = ?,Gender = ?,Email = ?,Phone = ?,UserName = ?,Password = ?,CreatorUserId = ?,ObjectId = ? WHERE _id = ?";
+      "UPDATE employee SET RoleId = ?,CityId = ?,DistrictId = ?,WardId = ?,ApartmentId = ?,Customer = ?,Avatar = ?,FullName = ?,Email = ?,Phone = ?,UserName = ?,Password = ?,CreatorUserId = ?,ObjectId = ? WHERE _id = ?";
     const values = [
       Employee.RoleId,
       Employee.CityId,
       Employee.DistrictId,
       Employee.WardId,
       Employee.ApartmentId,
-      Employee.Address,
+      Employee.Customer,
       Employee.Avatar,
       Employee.FullName,
-      Employee.DoB,
-      Employee.Gender,
       Employee.Email,
       Employee.Phone,
       Employee.UserName,

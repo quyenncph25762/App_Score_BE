@@ -92,7 +92,55 @@ class EmployeeController {
             if (err) {
               console.log("Error", err);
             } else {
-              const EmployeeId = results.insertId;
+              if (FieldIds) {
+                const EmployeeId = results.insertId;
+                const Fields = FieldIds.map((id) => {
+                  const forms = {
+                    EmployeeId: EmployeeId,
+                    FieldId: id,
+                  };
+                  return new Promise((resolve, reject) => {
+                    Employee.createInfo_Employee(forms, (err, data) => {
+                      if (err) {
+                        reject(err);
+                      } else {
+                        resolve(data);
+                      }
+                    });
+                  });
+                });
+                Promise.all(Fields)
+                  .then(() => {
+                    res.status(200).json({
+                      messager: "Thêm tài khoản thành công",
+                    });
+                  })
+                  .catch((err) => {
+                    console.log("Error", err);
+                  });
+              } else {
+                res.status(200).json({
+                  messager: "Thêm tài khoản thành công",
+                });
+              }
+            }
+          });
+        }
+      }
+    });
+  }
+  updateEmployee(req, res) {
+    const EmployeeId = req.params.id;
+    const FieldIds = req.body.Fields;
+    Employee.deleteInfo_Employee(EmployeeId, (err, data) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        Employee.updateEmployee(EmployeeId, req.body, (err, results) => {
+          if (err) {
+            console.log("Error", err);
+          } else {
+            if (FieldIds) {
               const Fields = FieldIds.map((id) => {
                 const forms = {
                   EmployeeId: EmployeeId,
@@ -111,53 +159,17 @@ class EmployeeController {
               Promise.all(Fields)
                 .then(() => {
                   res.status(200).json({
-                    messager: "Thêm tài khoản thành công",
+                    messager: "Chỉnh sửa tài khoản thành công",
                   });
                 })
                 .catch((err) => {
                   console.log("Error", err);
                 });
+            } else {
+              res.status(200).json({
+                messager: "Thêm tài khoản thành công",
+              });
             }
-          });
-        }
-      }
-    });
-  }
-  updateEmployee(req, res) {
-    const EmployeeId = req.params.id;
-    const FieldIds = req.body.Fields;
-    Employee.deleteInfo_Employee(EmployeeId, (err, data) => {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        Employee.updateEmployee(EmployeeId, req.body, (err, results) => {
-          if (err) {
-            console.log("Error", err);
-          } else {
-            const Fields = FieldIds.map((id) => {
-              const forms = {
-                EmployeeId: EmployeeId,
-                FieldId: id,
-              };
-              return new Promise((resolve, reject) => {
-                Employee.createInfo_Employee(forms, (err, data) => {
-                  if (err) {
-                    reject(err);
-                  } else {
-                    resolve(data);
-                  }
-                });
-              });
-            });
-            Promise.all(Fields)
-              .then(() => {
-                res.status(200).json({
-                  messager: "Chỉnh sửa tài khoản thành công",
-                });
-              })
-              .catch((err) => {
-                console.log("Error", err);
-              });
           }
         });
       }
