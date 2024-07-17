@@ -109,7 +109,7 @@ const Employee = {
   // create
   createEmployee: (Employee, callback) => {
     const query =
-      "INSERT INTO employee (Code,RoleId,CityId,DistrictId,WardId,ApartmentId,Customer,Avatar,FullName,Email,Phone,UserName,Password,CreatorUserId,ObjectId) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO employee (Code,RoleId,CityId,DistrictId,WardId,ApartmentId,Customer,Avatar,IsActive,FullName,Email,Phone,UserName,Password,CreatorUserId,ObjectId) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     const values = [
       Employee.Code,
       Employee.RoleId,
@@ -126,13 +126,14 @@ const Employee = {
       Employee.Password,
       Employee.CreatorUserId,
       Employee.ObjectId,
+      Employee.IsActive,
     ];
     connection.query(query, values, callback);
   },
   // update
   updateEmployee: (id, Employee, callback) => {
     const query =
-      "UPDATE employee SET RoleId = ?,CityId = ?,DistrictId = ?,WardId = ?,ApartmentId = ?,Customer = ?,Avatar = ?,FullName = ?,Email = ?,Phone = ?,UserName = ?,Password = ?,CreatorUserId = ?,ObjectId = ? WHERE _id = ?";
+      "UPDATE employee SET RoleId = ?,CityId = ?,DistrictId = ?,WardId = ?,ApartmentId = ?,Customer = ?,Avatar = ?,FullName = ?,Email = ?,Phone = ?,UserName = ?,Password = ?,CreatorUserId = ?,ObjectId = ?,IsActive = ? WHERE _id = ?";
     const values = [
       Employee.RoleId,
       Employee.CityId,
@@ -148,6 +149,7 @@ const Employee = {
       Employee.Password,
       Employee.CreatorUserId,
       Employee.ObjectId,
+      Employee.IsActive,
       id,
     ];
     connection.query(query, values, callback);
