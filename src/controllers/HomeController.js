@@ -57,7 +57,7 @@ class EmployeeController {
     });
   }
   getAllYears(req, res) {
-    HomeModle.getAllYear((err, results) => {
+    HomeModle.getAllYears((err, results) => {
       if (err) {
         console.log("Error", err);
       } else {

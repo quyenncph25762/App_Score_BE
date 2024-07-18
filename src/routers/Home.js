@@ -12,4 +12,5 @@ router.get("/fields", Home.getAllFields);
 
 router.get("/apartments", Home.getAllApartment);
 
+router.get("/years", Home.getAllYears);
 export default router;
