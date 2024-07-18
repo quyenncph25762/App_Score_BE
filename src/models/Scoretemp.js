@@ -1,11 +1,23 @@
 import connection from "../config/db";
 const Scoretemp = {
   getAllScoretemp: (callback) => {
-    const query = "SELECT * FROM scoretemp WHERE IsDeleted = 0";
+    const query = `SELECT scoretemp.*,
+    year.Name AS NameYear,
+    object.NameObject AS NameObject
+    FROM scoretemp
+    JOIN year ON scoretemp.YearId = year._id
+    JOIN object ON scoretemp.ObjectId = object._id
+    WHERE scoretemp.IsDeleted = 0`;
     connection.query(query, callback);
   },
   getOneScoretemp: (id, callback) => {
-    const query = "SELECT * FROM scoretemp WHERE IsDeleted = 0 AND _id =?";
+    const query = `SELECT scoretemp.*,
+    year.Name AS NameYear,
+    object.NameObject AS NameObject
+    FROM scoretemp
+    JOIN year ON scoretemp.YearId = year._id
+    JOIN object ON scoretemp.ObjectId = object._id
+    WHERE scoretemp.IsDeleted = 0 AND scoretemp._id = ?`;
     connection.query(query, id, callback);
   },
   createScoretemp: (temp, callback) => {

@@ -109,7 +109,7 @@ const Employee = {
   // create
   createEmployee: (Employee, callback) => {
     const query =
-      "INSERT INTO employee (Code,RoleId,CityId,DistrictId,WardId,ApartmentId,Customer,Avatar,IsActive,FullName,Email,Phone,UserName,Password,CreatorUserId,ObjectId,IsLock) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO employee (Code,RoleId,CityId,DistrictId,WardId,ApartmentId,Customer,Avatar,FullName,Email,Phone,UserName,Password,CreatorUserId,ObjectId,IsActive,IsLock) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     const values = [
       Employee.Code,
       Employee.RoleId,

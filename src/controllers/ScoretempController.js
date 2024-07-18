@@ -182,7 +182,6 @@ class ScoretempController {
       }
     });
   }
-
   restoreAll_Selected(req, res) {
     const ids = req.body;
     let idString = ids.map(String);
