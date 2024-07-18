@@ -1,18 +1,18 @@
 import connection from "../config/db";
 const Criteria = {
-  getAllCriteria: (callback) => {
-    const query = `SELECT criteria.*
-    scoretemp.Name AS NameScoreTemp
-    JOIN scoretemp ON criteria.ScoreTempId = scoretemp._id
-    WHERE criteria.IsDeleted = 0`;
-    connection.query(query, callback);
-  },
   getOneCriteria: (id, callback) => {
     const query = `SELECT criteria.*
     scoretemp.Name AS NameScoreTemp
     JOIN scoretemp ON criteria.ScoreTempId = scoretemp._id
     WHERE criteria.IsDeleted = 0 AND criteria._id = ?`;
     connection.query(query, id, callback);
+  },
+  getAll_ByScoretemp(ScoretempId, callback) {
+    const query = `SELECT criteria.*
+    scoretemp.Name AS NameScoreTemp
+    JOIN scoretemp ON criteria.ScoreTempId = scoretemp._id
+    WHERE criteria.IsDeleted = 0 AND criteria.ScoretempId = ?`;
+    connection.query(query, ScoretempId, callback);
   },
   createCriteria: (criteria, callback) => {
     const query =
@@ -50,6 +50,5 @@ const Criteria = {
     ];
     connection.query(query, values, callback);
   },
-
 };
 export default Criteria;
