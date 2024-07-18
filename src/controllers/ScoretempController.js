@@ -22,6 +22,16 @@ class ScoretempController {
       }
     });
   }
+  // lấy thùng rác
+  getAll_TrashScoretemp(req, res) {
+    Scoretemp.getAll_TrashScoretemp((err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  }
   // create
   createScoretemp(req, res) {
     const Criteria = req.body.Criteria;
@@ -55,7 +65,7 @@ class ScoretempController {
                 const formDetail = {
                   Name: detail.Name,
                   CriteriaId: CriteriaId,
-                 
+
                   Score: detail.Score,
                   Target: detail.Target,
                   IsTypePercent: detail.IsTypePercent,
@@ -127,7 +137,7 @@ class ScoretempController {
                   const formDetail = {
                     Name: detail.Name,
                     CriteriaId: CriteriaId,
-                   
+
                     Score: detail.Score,
                     Target: detail.Target,
                     IsTypePercent: detail.IsTypePercent,
