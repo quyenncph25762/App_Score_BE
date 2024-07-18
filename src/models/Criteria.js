@@ -1,53 +1,55 @@
 import connection from "../config/db";
 const Criteria = {
   getAllCriteria: (callback) => {
-    const query = "SELECT * FROM criteria WHERE IsDeleted = 0";
+    const query = `SELECT criteria.*
+    scoretemp.Name AS NameScoreTemp
+    JOIN scoretemp ON criteria.ScoreTempId = scoretemp._id
+    WHERE criteria.IsDeleted = 0`;
     connection.query(query, callback);
   },
   getOneCriteria: (id, callback) => {
-    const query = "SELECT * FROM criteria WHERE IsDeleted = 0 AND _id = ?";
+    const query = `SELECT criteria.*
+    scoretemp.Name AS NameScoreTemp
+    JOIN scoretemp ON criteria.ScoreTempId = scoretemp._id
+    WHERE criteria.IsDeleted = 0 AND criteria._id = ?`;
     connection.query(query, id, callback);
   },
   createCriteria: (criteria, callback) => {
     const query =
-      "INSERT INTO criteria (ScoreTempId,NameCriteria) VALUES (?,?)";
-    const values = [criteria.ScoreTempId, criteria.NameCriteria];
+      "INSERT INTO criteria (ScoreTempId,Name,FieldId) VALUES (?,?,?)";
+    const values = [criteria.ScoreTempId, criteria.Name, criteria.FieldId];
     connection.query(query, values, callback);
   },
-  updateCriteria: (id, criteria, callback) => {
-    const query = "UPDATE criteria SET ScoreTempId =? ,NameCriteria =? ";
-    const values = [criteria.ScoreTempId, criteria.NameCriteria, id];
-    connection.query(query, values, callback);
+  deleteCriteria: (ScoreTempId, callback) => {
+    const query = "DELETE FROM criteria WHERE ScoreTempId = ? ";
+    connection.query(query, ScoreTempId, callback);
   },
 
   //detail criteria
   getDetailCriteria_ByCriteriaId: (CriteriaId, callback) => {
-    const query =
-      "SELECT * FROM criteria_detail WHERE IsDeleted = 0 AND CriteriaId = ?";
+    const query = `SELECT criteria_detail.*
+      criteria.NameCriteria as NameCriteria,
+      JOIN criteria ON criteria_detail.Criteria = criteria._id
+      WHERE criteria_detail.IsDeleted = 0 AND criteria_detail.CriteriaId = ?`;
     connection.query(query, CriteriaId, callback);
   },
   createDetailCriteria: (detailCriteria, callback) => {
     const query =
-      "INSERT INTO criteria_detail (Name,CriteriaId,IsScore,Score) VALUES (?,?,?,?)";
+      "INSERT INTO criteria_detail (Name,CriteriaId,Score,Target,IsTypePercent,IsTypeTotal,IsCurrentStatusType,TypePercentValue,TypeTotalValue,CurrentStatusValue) VALUES (?,?,?,?,?,?,?,?,?,?)";
     const values = [
       detailCriteria.Name,
       detailCriteria.CriteriaId,
-      detailCriteria.IsScore,
       detailCriteria.Score,
+      detailCriteria.Target,
+      detailCriteria.IsTypePercent,
+      detailCriteria.IsTypeTotal,
+      detailCriteria.IsCurrentStatusType,
+      detailCriteria.TypePercentValue,
+      detailCriteria.TypeTotalValue,
+      detailCriteria.CurrentStatusValue,
     ];
     connection.query(query, values, callback);
   },
-  updateDetailCriteria: (id, detailCriteria, callback) => {
-    const query =
-      "UPDATE criteria_detail SET Name = ?,CriteriaId = ?,IsScore = ?,Score = ? WHERE _id =?";
-    const values = [
-      detailCriteria.Name,
-      detailCriteria.CriteriaId,
-      detailCriteria.IsScore,
-      detailCriteria.Score,
-      id,
-    ];
-    connection.query(query, values, callback);
-  },
+
 };
 export default Criteria;

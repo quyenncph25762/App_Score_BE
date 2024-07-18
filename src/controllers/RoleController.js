@@ -20,7 +20,7 @@ class RoleController {
   }
   getOneRole(req, res) {
     const id = req.params.id;
-    RoleModle.getOneRole(id, (err, results) => {
+    RoleModle.getOneRole((err, results) => {
       if (err) {
         console.log("Error", err);
       } else {

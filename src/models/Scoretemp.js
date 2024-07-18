@@ -9,15 +9,39 @@ const Scoretemp = {
     connection.query(query, id, callback);
   },
   createScoretemp: (temp, callback) => {
-    const query = "INSERT INTO scoretemp (Code,Name,Note) VALUES (?,?,?)";
-    const values = [temp.Code, temp.Name, temp.Note];
+    const query =
+      "INSERT INTO scoretemp (Code,Name,YearId,ObjectId,IsActive,Description) VALUES (?,?,?,?,?,?)";
+    const values = [
+      temp.Code,
+      temp.Name,
+      temp.YearId,
+      temp.ObjectId,
+      temp.IsActive,
+      temp.Description,
+    ];
     connection.query(query, values, callback);
   },
   updateScoretemp: (id, temp, callback) => {
     const query =
-      "UPDATE scoretemp SET Code = ?,Name = ?,Note = ? WHERE _id = ?";
-    const values = [temp.Code, temp.Name, temp.Note, id];
+      "UPDATE scoretemp SET Code = ?,Name = ?,YearId = ?,ObjectId = ?,IsActive = ?,Description = ? WHERE _id = ?";
+    const values = [
+      temp.Code,
+      temp.Name,
+      temp.YearId,
+      temp.ObjectId,
+      temp.IsActive,
+      temp.Description,
+      id,
+    ];
     connection.query(query, values, callback);
+  },
+  deleteScoretemp: (id, callback) => {
+    const query = "UPDATE scoretemp SET IsDeleted = 1 WHERE _id IN(?)";
+    connection.query(query, [id], callback);
+  },
+  restoreScoretemp: (id, callback) => {
+    const query = "UPDATE scoretemp SET IsDeleted = 0 WHERE _id IN(?)";
+    connection.query(query, [id], callback);
   },
 };
 export default Scoretemp;
