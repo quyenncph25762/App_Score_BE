@@ -20,6 +20,16 @@ const Scoretemp = {
     WHERE scoretemp.IsDeleted = 0 AND scoretemp._id = ?`;
     connection.query(query, id, callback);
   },
+  getAll_TrashScoretemp: (callback) => {
+    const query = `SELECT scoretemp.*,
+    year.Name AS NameYear,
+    object.NameObject AS NameObject
+    FROM scoretemp
+    JOIN year ON scoretemp.YearId = year._id
+    JOIN object ON scoretemp.ObjectId = object._id
+    WHERE scoretemp.IsDeleted = 1`;
+    connection.query(query, callback);
+  },
   createScoretemp: (temp, callback) => {
     const query =
       "INSERT INTO scoretemp (Code,Name,YearId,ObjectId,IsActive,Description) VALUES (?,?,?,?,?,?)";

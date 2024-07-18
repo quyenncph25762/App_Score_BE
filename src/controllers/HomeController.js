@@ -56,5 +56,14 @@ class EmployeeController {
       }
     });
   }
+  getAllYears(req, res) {
+    HomeModle.getAllYear((err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  }
 }
 export default new EmployeeController();

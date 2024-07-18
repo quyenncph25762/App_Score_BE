@@ -24,5 +24,9 @@ const HomeModle = {
     const query = "SELECT * FROM apartment WHERE IsDeleted = 0";
     connection.query(query, callback);
   },
+  getAllYears:(callback) =>{
+    const query = "SELECT * FROM year WHERE IsDeleted = 0";
+    connection.query(query, callback);
+  }
 };
 export default HomeModle;
