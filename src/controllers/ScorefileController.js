@@ -1,3 +1,4 @@
+import { message } from "antd";
 import Employee from "../models/Employee";
 import ScorefileModle from "../models/Scorefile";
 import jwt from "jsonwebtoken";
@@ -19,7 +20,28 @@ class ScorefileController {
     let par = jwt.verify(token, process.env.SECRET);
     let id = par._id;
     const form = { EmployeeId: id, ...req.body };
-    console.log(form);
+    ScorefileModle.createScorefile(form, (err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json({
+          message: "Tạo phiếu thành công",
+        });
+      }
+    });
   }
+  update_Scorefile(req, res) {
+    const id = req.params.id;
+    ScorefileModle.updateScorefile(id, req.body, (err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json({
+          message: "Cập nhật phiếu thành công",
+        });
+      }
+    });
+  }
+  
 }
 export default new ScorefileController();

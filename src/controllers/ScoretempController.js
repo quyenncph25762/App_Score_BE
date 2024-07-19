@@ -13,12 +13,13 @@ class ScoretempController {
   }
   //
   getOneScoretemp(req, res) {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     Scoretemp.getOneScoretemp(id, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
         const scoretemp = {
+          _id: id,
           Code: results[0].Code,
           Name: results[0].NameScoretemp,
           IsActive: results[0].IsActive,
