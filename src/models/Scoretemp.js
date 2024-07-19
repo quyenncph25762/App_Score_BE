@@ -16,7 +16,7 @@ const Scoretemp = {
     y.Name AS NameYear,
     o.NameObject AS NameObject,
     c.Name AS NameCriteria,c._id AS Criteria_id,c.FieldId AS FieldId,
-    d.Name AS NameCriteriaDetail,d.Score AS Score,d.Target AS Target,d.IsTypePercent AS IsTypePercent,d.IsTypeTotal AS IsTypeTotal,d.IsCurrentStatusType AS IsCurrentStatusType
+    d.Name AS NameCriteriaDetail,d.Score AS Score,d.Target AS Target,d.IsTypePercent AS IsTypePercent,d.IsTypeTotal AS IsTypeTotal,d.IsCurrentStatusType AS IsCurrentStatusType,d._id AS ScoretempDetail_id
     FROM scoretemp s
     JOIN year y ON s.YearId = y._id
     JOIN object o ON s.ObjectId = o._id

@@ -33,6 +33,7 @@ class ScoretempController {
         results.forEach((element) => {
           if (!CriteriaMap.has(element.Criteria_id)) {
             CriteriaMap.set(element.Criteria_id, {
+              _id: element.Criteria_id,
               Name: element.NameCriteria,
               FieldId: element.FieldId,
               listCriteria: [],
@@ -40,6 +41,7 @@ class ScoretempController {
           }
           const criteria = CriteriaMap.get(element.Criteria_id);
           criteria.listCriteria.push({
+            _id: element.ScoretempDetail_id,
             Name: element.NameCriteriaDetail,
             Score: element.Score,
             Target: element.Target,

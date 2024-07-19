@@ -5,14 +5,18 @@ class EmployeeController {
   login(req, res) {
     const UserName = req.body.UserName;
     const PassWord = req.body.Password;
-
     Employee.getOneEmloyee(UserName, PassWord, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
-        if (results.length === 1) {
+        
+        if (results.length > 0) {
           const data = results[0];
           const token = jwt.sign({ _id: data._id }, process.env.SECRET);
+          res.cookie(process.env.COOKIE, token, {
+            httpOnly: true,
+            secure: true,
+          });
           res.status(200).json(token);
         } else {
           res.status(400).json({
@@ -36,7 +40,7 @@ class EmployeeController {
   getAll(req, res) {
     const searchName = req.query.searchName || "";
     const page = parseInt(req.query.page) || 1; // Trang hiện tại
-    const pageSize = 2; // Kích thước trang
+    const pageSize = 10; // Kích thước trang
     const startIndex = (page - 1) * pageSize;
     const endIndex = page * pageSize;
     Employee.getAllEmployee(searchName, (err, data) => {

@@ -9,7 +9,30 @@ const ScorefileModle = {
     WHERE scorefile.IsDeleted = 0 AND scorefile.EmployeeId = ?`;
     connection.query(query, EmployeeId, callback);
   },
- 
-  
+  createScorefile: (scorefile, callback) => {
+    const query = `INSERT INTO scorefile (EmployeeId,ScoreTempId,Code,Score,Status,IsActive) VALUES (?,?,?,?,?,?)`;
+    const values = [
+      scorefile.EmployeeId,
+      scorefile.ScoreTempId,
+      scorefile.Code,
+      scorefile.Score,
+      scorefile.Status,
+      scorefile.IsActive,
+    ];
+    connection.query(query, values, callback);
+  },
+  updateScorefile: (id, scorefile, callback) => {
+    const query = `UPDATE scorefile SET Score  = ?,Status  = ?,IsActive  = ? WHERE _id IN(?)`;
+    const values = [scorefile.Score, scorefile.Status, scorefile.IsActive, id];
+    connection.query(query, values, callback);
+  },
+  deleteScorefile: (id, callback) => {
+    const query = `UPDATE scorefile SET IsDeleted = 1 WHERE _id IN(?)`;
+    connection.query(query, [id], callback);
+  },
+  restoreScorefile: (id, callback) => {
+    const query = `UPDATE scorefile SET IsDeleted = 0 WHERE _id IN(?)`;
+    connection.query(query, [id], callback);
+  },
 };
 export default ScorefileModle;
