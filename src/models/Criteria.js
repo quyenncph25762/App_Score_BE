@@ -3,6 +3,7 @@ const Criteria = {
   getOneCriteria: (id, callback) => {
     const query = `SELECT criteria.*
     scoretemp.Name AS NameScoreTemp
+    FROM criteria
     JOIN scoretemp ON criteria.ScoreTempId = scoretemp._id
     WHERE criteria.IsDeleted = 0 AND criteria._id = ?`;
     connection.query(query, id, callback);
@@ -10,6 +11,7 @@ const Criteria = {
   getAll_ByScoretemp(ScoretempId, callback) {
     const query = `SELECT criteria.*
     scoretemp.Name AS NameScoreTemp
+    FROM criteria
     JOIN scoretemp ON criteria.ScoreTempId = scoretemp._id
     WHERE criteria.IsDeleted = 0 AND criteria.ScoretempId = ?`;
     connection.query(query, ScoretempId, callback);
@@ -28,7 +30,8 @@ const Criteria = {
   //detail criteria
   getDetailCriteria_ByCriteriaId: (CriteriaId, callback) => {
     const query = `SELECT criteria_detail.*
-      criteria.NameCriteria as NameCriteria,
+      criteria.NameCriteria as NameCriteria
+      FROM criteria_detail
       JOIN criteria ON criteria_detail.Criteria = criteria._id
       WHERE criteria_detail.IsDeleted = 0 AND criteria_detail.CriteriaId = ?`;
     connection.query(query, CriteriaId, callback);
