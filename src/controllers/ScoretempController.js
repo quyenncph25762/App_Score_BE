@@ -1,6 +1,6 @@
 import Scoretemp from "../models/Scoretemp";
 import CriteriaModle from "../models/Criteria";
-import { Descriptions } from "antd";
+
 class ScoretempController {
   getAllScoretemp(req, res) {
     Scoretemp.getAllScoretemp((err, results) => {
@@ -25,6 +25,8 @@ class ScoretempController {
           Description: results[0].Description,
           NameYear: results[0].NameYear,
           NameObject: results[0].NameObject,
+          ObjectId: results[0].ObjectId,
+          YearId: results[0].YearId,
           Criteria: [],
         };
         const CriteriaMap = new Map();
@@ -46,7 +48,7 @@ class ScoretempController {
             IsCurrentStatusType: element.IsCurrentStatusType,
           });
         });
-      
+
         scoretemp.Criteria = Array.from(CriteriaMap.values());
         res.status(200).json(scoretemp);
       }
@@ -95,15 +97,11 @@ class ScoretempController {
                 const formDetail = {
                   Name: detail.Name,
                   CriteriaId: CriteriaId,
-
                   Score: detail.Score,
                   Target: detail.Target,
                   IsTypePercent: detail.IsTypePercent,
                   IsTypeTotal: detail.IsTypeTotal,
                   IsCurrentStatusType: detail.IsCurrentStatusType,
-                  TypePercentValue: detail.TypePercentValue,
-                  TypeTotalValue: detail.TypeTotalValue,
-                  CurrentStatusValue: detail.CurrentStatusValue,
                 };
                 await new Promise((resolve, reject) => {
                   CriteriaModle.createDetailCriteria(
@@ -167,15 +165,11 @@ class ScoretempController {
                   const formDetail = {
                     Name: detail.Name,
                     CriteriaId: CriteriaId,
-
                     Score: detail.Score,
                     Target: detail.Target,
                     IsTypePercent: detail.IsTypePercent,
                     IsTypeTotal: detail.IsTypeTotal,
                     IsCurrentStatusType: detail.IsCurrentStatusType,
-                    TypePercentValue: detail.TypePercentValue,
-                    TypeTotalValue: detail.TypeTotalValue,
-                    CurrentStatusValue: detail.CurrentStatusValue,
                   };
                   await new Promise((resolve, reject) => {
                     CriteriaModle.createDetailCriteria(

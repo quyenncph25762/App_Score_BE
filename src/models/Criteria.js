@@ -35,7 +35,7 @@ const Criteria = {
   },
   createDetailCriteria: (detailCriteria, callback) => {
     const query =
-      "INSERT INTO criteria_detail (Name,CriteriaId,Score,Target,IsTypePercent,IsTypeTotal,IsCurrentStatusType,TypePercentValue,TypeTotalValue,CurrentStatusValue) VALUES (?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO criteria_detail (Name,CriteriaId,Score,Target,IsTypePercent,IsTypeTotal,IsCurrentStatusType) VALUES (?,?,?,?,?,?,?)";
     const values = [
       detailCriteria.Name,
       detailCriteria.CriteriaId,
@@ -44,9 +44,6 @@ const Criteria = {
       detailCriteria.IsTypePercent,
       detailCriteria.IsTypeTotal,
       detailCriteria.IsCurrentStatusType,
-      detailCriteria.TypePercentValue,
-      detailCriteria.TypeTotalValue,
-      detailCriteria.CurrentStatusValue,
     ];
     connection.query(query, values, callback);
   },
