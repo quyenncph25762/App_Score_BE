@@ -9,6 +9,7 @@ const ScorefileModle = {
     WHERE scorefile.IsDeleted = 0 AND scorefile.EmployeeId = ?`;
     connection.query(query, EmployeeId, callback);
   },
+ 
   
 };
 export default ScorefileModle;

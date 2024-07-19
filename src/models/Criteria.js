@@ -1,12 +1,9 @@
 import connection from "../config/db";
 const Criteria = {
-  getOneCriteria: (id, callback) => {
-    const query = `SELECT criteria.*
-    scoretemp.Name AS NameScoreTemp
-    FROM criteria
-    JOIN scoretemp ON criteria.ScoreTempId = scoretemp._id
-    WHERE criteria.IsDeleted = 0 AND criteria._id = ?`;
-    connection.query(query, id, callback);
+  getOneCriteria: (ScoreTempId, callback) => {
+    const query = `SELECT * FROM criteria,Name as NameCriteria
+    WHERE IsDeleted = 0 AND  ScoreTempId= ?`;
+    connection.query(query, ScoreTempId, callback);
   },
   getAll_ByScoretemp(ScoretempId, callback) {
     const query = `SELECT criteria.*
@@ -29,8 +26,8 @@ const Criteria = {
 
   //detail criteria
   getDetailCriteria_ByCriteriaId: (CriteriaId, callback) => {
-    const query = `SELECT criteria_detail.*
-      criteria.NameCriteria as NameCriteria
+    const query = `SELECT criteria_detail.*,
+      criteria.Name as NameCriteria
       FROM criteria_detail
       JOIN criteria ON criteria_detail.Criteria = criteria._id
       WHERE criteria_detail.IsDeleted = 0 AND criteria_detail.CriteriaId = ?`;

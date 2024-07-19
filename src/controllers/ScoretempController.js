@@ -1,5 +1,6 @@
 import Scoretemp from "../models/Scoretemp";
 import CriteriaModle from "../models/Criteria";
+import { Descriptions } from "antd";
 class ScoretempController {
   getAllScoretemp(req, res) {
     Scoretemp.getAllScoretemp((err, results) => {
@@ -17,8 +18,37 @@ class ScoretempController {
       if (err) {
         console.log("Error", err);
       } else {
-        const data = results[0];
-        res.status(200).json(data);
+        const scoretemp = {
+          Code: results[0].Code,
+          Name: results[0].NameScoretemp,
+          IsActive: results[0].IsActive,
+          Description: results[0].Description,
+          NameYear: results[0].NameYear,
+          NameObject: results[0].NameObject,
+          Criteria: [],
+        };
+        const CriteriaMap = new Map();
+        results.forEach((element) => {
+          if (!CriteriaMap.has(element.Criteria_id)) {
+            CriteriaMap.set(element.Criteria_id, {
+              Name: element.NameCriteria,
+              FieldId: element.FieldId,
+              listCriteria: [],
+            });
+          }
+          const criteria = CriteriaMap.get(element.Criteria_id);
+          criteria.listCriteria.push({
+            Name: element.NameCriteriaDetail,
+            Score: element.Score,
+            Target: element.Target,
+            IsTypePercent: element.IsTypePercent,
+            IsTypeTotal: element.IsTypeTotal,
+            IsCurrentStatusType: element.IsCurrentStatusType,
+          });
+        });
+      
+        scoretemp.Criteria = Array.from(CriteriaMap.values());
+        res.status(200).json(scoretemp);
       }
     });
   }
