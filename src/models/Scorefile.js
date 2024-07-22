@@ -9,6 +9,20 @@ const ScorefileModle = {
     WHERE scorefile.IsDeleted = 0 AND scorefile.EmployeeId = ?`;
     connection.query(query, EmployeeId, callback);
   },
+  getOneScorefile_ByEmployee: (id, EmployeeId, callback) => {
+    const query = `
+    SELECT scorefile.*,
+    d._id AS IdScorefile_Detail,
+    d.CriteriaDetailId AS CriteriaDetailId,
+    d.TypePercentValue AS TypePercentValue,
+    d.TypeTotalValue AS TypeTotalValue,
+    d.CurrentStatusValue AS CurrentStatusValue
+    FROM scorefile
+    LEFT JOIN scorefile_detail d ON scorefile._id = d.ScorefileId
+    WHERE scorefile.IsDeleted = 0 AND scorefile._id = ?
+    `;
+    connection.query(query, [id, EmployeeId], callback);
+  },
   createScorefile: (scorefile, callback) => {
     const query = `INSERT INTO scorefile (EmployeeId,ScoreTempId,Code,Score,Status,IsActive) VALUES (?,?,?,?,?,?)`;
     const values = [
@@ -47,6 +61,10 @@ const ScorefileModle = {
       scorefile.CurrentStatusValue,
     ];
     connection.query(query, values, callback);
+  },
+  deleteScorefile_Detail: (ScorefileId, callback) => {
+    const query = "DELETE FROM scorefile_detail WHERE ScorefileId = ?";
+    connection.query(query, ScorefileId, callback);
   },
 };
 export default ScorefileModle;
