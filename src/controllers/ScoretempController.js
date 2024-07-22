@@ -51,7 +51,6 @@ class ScoretempController {
             IsCurrentStatusType: element.IsCurrentStatusType,
           });
         });
-
         scoretemp.Criteria = Array.from(CriteriaMap.values());
         res.status(200).json(scoretemp);
       }

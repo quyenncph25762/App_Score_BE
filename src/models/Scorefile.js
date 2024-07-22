@@ -34,5 +34,19 @@ const ScorefileModle = {
     const query = `UPDATE scorefile SET IsDeleted = 0 WHERE _id IN(?)`;
     connection.query(query, [id], callback);
   },
+  // scoreFile Detail
+  creatScoreFile_Detail: (scorefile, callback) => {
+    const query =
+      "INSERT INTO scorefile_detail (ScorefileId,CriteriaDetailId,EmployeeId,TypePercentValue,TypeTotalValue,CurrentStatusValue) VALUES (?,?,?,?,?,?)";
+    const values = [
+      scorefile.ScorefileId,
+      scorefile.CriteriaDetailId,
+      scorefile.EmployeeId,
+      scorefile.TypePercentValue,
+      scorefile.TypeTotalValue,
+      scorefile.CurrentStatusValue,
+    ];
+    connection.query(query, values, callback);
+  },
 };
 export default ScorefileModle;

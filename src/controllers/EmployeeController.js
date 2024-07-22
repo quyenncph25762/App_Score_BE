@@ -9,15 +9,19 @@ class EmployeeController {
       if (err) {
         console.log("Error", err);
       } else {
-        
         if (results.length > 0) {
           const data = results[0];
           const token = jwt.sign({ _id: data._id }, process.env.SECRET);
+
           res.cookie(process.env.COOKIE, token, {
             httpOnly: true,
             secure: true,
           });
-          res.status(200).json(token);
+
+          res.status(200).json({
+            name: data.FullName,
+            avatar: data.Avatar,
+          });
         } else {
           res.status(400).json({
             messager: "Đăng nhập thất bại",

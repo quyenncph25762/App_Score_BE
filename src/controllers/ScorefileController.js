@@ -1,4 +1,3 @@
-import { message } from "antd";
 import Employee from "../models/Employee";
 import ScorefileModle from "../models/Scorefile";
 import jwt from "jsonwebtoken";
@@ -20,13 +19,41 @@ class ScorefileController {
     let par = jwt.verify(token, process.env.SECRET);
     let id = par._id;
     const form = { EmployeeId: id, ...req.body };
-    ScorefileModle.createScorefile(form, (err, results) => {
+    const listScoreFileDetail = req.body.listScoreFileDetail;
+    ScorefileModle.createScorefile(form, async (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({
-          message: "Tạo phiếu thành công",
-        });
+        try {
+          const ScorefileId = results.insertId;
+          if (listScoreFileDetail) {
+            for (const item of listScoreFileDetail) {
+              const forms = {
+                ScorefileId: ScorefileId,
+                CriteriaDetailId: item.CriteriaDetailId,
+                EmployeeId: id,
+                TypePercentValue: item.TypePercentValue,
+                TypeTotalValue: item.TypeTotalValue,
+                CurrentStatusValue: item.CurrentStatusValue,
+              };
+              await new Promise((resolve, reject) => {
+                ScorefileModle.creatScoreFile_Detail(forms, (err, data) => {
+                  if (err) {
+                    reject(err);
+                  } else {
+                    resolve(data);
+                  }
+                });
+              });
+            }
+          }
+          res.status(200).json({
+            message: "Tạo phiếu thành công",
+          });
+        } catch (error) {
+          console.log("Error", error);
+          res.status(500).json({ message: "Internal Server Error" });
+        }
       }
     });
   }
@@ -42,6 +69,5 @@ class ScorefileController {
       }
     });
   }
-  
 }
 export default new ScorefileController();
