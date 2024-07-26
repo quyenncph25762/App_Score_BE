@@ -5,6 +5,7 @@ import generateRandomString from "../middlewares/generate";
 import jwt from "jsonwebtoken";
 import { message } from "antd";
 class ScorefileController {
+  // lấy những phiếu chờ duyệt
   getScorefile_ByEmployeeId_Inactive(req, res) {
     let token = req.cookies.Countryside;
     let par = jwt.verify(token, process.env.SECRET);
@@ -17,11 +18,25 @@ class ScorefileController {
       }
     });
   }
+  // lấy những phiếu đã duyệt
   getScorefile_ByEmployeeId_ActiveNow(req, res) {
     let token = req.cookies.Countryside;
     let par = jwt.verify(token, process.env.SECRET);
     let id = par._id;
     ScorefileModle.getScorefile_ByEmployee_ActiveNow(id, (err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  }
+  // lấy tất cả phiếu
+  getScorefile_ByEmployeeId(req, res) {
+    let token = req.cookies.Countryside;
+    let par = jwt.verify(token, process.env.SECRET);
+    let id = par._id;
+    ScorefileModle.getScorefile_ByEmployee(id, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -42,7 +57,7 @@ class ScorefileController {
         if (err) {
           console.log("Error", err);
         } else {
-          console.log(results)
+          console.log(results);
           const data = {
             EmployeeId: results[0].EmployeeId,
             ScoreTempId: results[0].ScoreTempId,

@@ -3,14 +3,19 @@ import ScorefileController from "../controllers/ScorefileController";
 const route = express.Router();
 
 route.post("/create-scorefile", ScorefileController.create_Scorefile);
+// lấy scorefile chưa duyệt
 route.get(
   "/get-scorefile-inactive",
   ScorefileController.getScorefile_ByEmployeeId_Inactive
 );
+// lấy scorefile đã duyệt
 route.get(
   "/get-scorefile-active-now",
   ScorefileController.getScorefile_ByEmployeeId_ActiveNow
 );
+// lấy tất cả scorefile
+route.get("/get-scorefile", ScorefileController.getScorefile_ByEmployeeId);
+// lấy scorefile theo id
 route.get("/:id/getone-scorefile", ScorefileController.getOne_Scorefile);
 route.patch("/:id/update-scorefile", ScorefileController.update_Scorefile);
 

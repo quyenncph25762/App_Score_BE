@@ -37,6 +37,25 @@ const ScorefileModle = {
     `;
     connection.query(query, [EmployeeId], callback);
   },
+  // lấy tất cả scorefile
+  getScorefile_ByEmployee: (EmployeeId, callback) => {
+    const query = `
+    SELECT 
+    s._id AS IdScoretemp,
+    s.Name AS NameScoretemp,
+    s.YearId AS YearId, 
+    y.Name AS NameYear,
+    sf.IsActive AS IsActive,
+    sf.Code AS Code,
+    sf.Score AS Score,
+    sf.Status AS Status
+    FROM scorefile sf
+    JOIN scoretemp s ON sf.ScoreTempId = s._id
+    JOIN year y ON sf.YearId = y._id
+    WHERE sf.IsDeleted = 0 AND sf.EmployeeId = ?
+    `;
+    connection.query(query, [EmployeeId], callback);
+  },
   getOneScorefile_ByEmployee: (id, EmployeeId, callback) => {
     const query = `
     SELECT scorefile.*,
