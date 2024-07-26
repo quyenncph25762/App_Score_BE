@@ -1,6 +1,6 @@
 import Scoretemp from "../models/Scoretemp";
 import CriteriaModle from "../models/Criteria";
-
+import generateRandomString from "../middlewares/generate";
 class ScoretempController {
   getAllScoretemp(req, res) {
     Scoretemp.getAllScoretemp((err, results) => {
@@ -56,6 +56,7 @@ class ScoretempController {
       }
     });
   }
+
   // lấy thùng rác
   getAll_TrashScoretemp(req, res) {
     Scoretemp.getAll_TrashScoretemp((err, results) => {

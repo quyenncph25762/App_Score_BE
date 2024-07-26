@@ -41,6 +41,7 @@ class EmployeeController {
       }
     });
   }
+  // lấy tài khoản theo tình
   getAll(req, res) {
     const searchName = req.query.searchName || "";
     const page = parseInt(req.query.page) || 1; // Trang hiện tại
@@ -72,10 +73,10 @@ class EmployeeController {
       }
     });
   }
-  getAll_InfoEmployee(req, res) {
-    const id = "";
+  getAll_FieldEmployee(req, res) {
+    const id = req.params.id;
 
-    Employee.getAll_InfoEmployee(id, (err, results) => {
+    Employee.getAll_FieldEmployee(id, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -87,6 +88,7 @@ class EmployeeController {
     const Email = req.body.Email;
     const UserName = req.body.UserName;
     const FieldIds = req.body.Fields;
+ 
     Employee.getEmployeeBy_EmailAndUserName(Email, UserName, (err, data) => {
       if (err) {
         console.log("Error", err);
@@ -100,15 +102,15 @@ class EmployeeController {
             if (err) {
               console.log("Error", err);
             } else {
+              const EmployeeId = results.insertId;
               if (FieldIds) {
-                const EmployeeId = results.insertId;
                 const Fields = FieldIds.map((id) => {
                   const forms = {
                     EmployeeId: EmployeeId,
                     FieldId: id,
                   };
                   return new Promise((resolve, reject) => {
-                    Employee.createInfo_Employee(forms, (err, data) => {
+                    Employee.createField_Employee(forms, (err, data) => {
                       if (err) {
                         reject(err);
                       } else {
@@ -126,7 +128,8 @@ class EmployeeController {
                   .catch((err) => {
                     console.log("Error", err);
                   });
-              } else {
+              }
+               else {
                 res.status(200).json({
                   messager: "Thêm tài khoản thành công",
                 });
@@ -137,52 +140,44 @@ class EmployeeController {
       }
     });
   }
-  updateEmployee(req, res) {
+  async updateEmployee(req, res) {
     const EmployeeId = req.params.id;
     const FieldIds = req.body.Fields;
-    Employee.deleteInfo_Employee(EmployeeId, (err, data) => {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        Employee.updateEmployee(EmployeeId, req.body, (err, results) => {
-          if (err) {
-            console.log("Error", err);
-          } else {
-            if (FieldIds) {
-              const Fields = FieldIds.map((id) => {
-                const forms = {
-                  EmployeeId: EmployeeId,
-                  FieldId: id,
-                };
-                return new Promise((resolve, reject) => {
-                  Employee.createInfo_Employee(forms, (err, data) => {
-                    if (err) {
-                      reject(err);
-                    } else {
-                      resolve(data);
-                    }
-                  });
-                });
-              });
-              Promise.all(Fields)
-                .then(() => {
-                  res.status(200).json({
-                    messager: "Chỉnh sửa tài khoản thành công",
-                  });
-                })
-                .catch((err) => {
-                  console.log("Error", err);
-                });
-            } else {
-              res.status(200).json({
-                messager: "Thêm tài khoản thành công",
-              });
-            }
-          }
+    try {
+      await Employee.deleteField_Employee(EmployeeId);
+      await Employee.deleteObject_Employee(EmployeeId);
+
+      const updateData = { ...req.body, EmployeeId };
+      await Employee.updateEmployee(EmployeeId, updateData);
+
+      // Process FieldIds if it exists
+      if (FieldIds && FieldIds.length > 0) {
+        const fieldPromises = FieldIds.map((id) => {
+          const forms = { EmployeeId, FieldId: id };
+          return new Promise((resolve, reject) => {
+            Employee.createField_Employee(forms, (err, data) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(data);
+              }
+            });
+          });
         });
+
+        await Promise.all(fieldPromises);
       }
-    });
+      res.status(200).json({
+        message: "Chỉnh sửa tài khoản thành công",
+      });
+    } catch (err) {
+      console.log("Error", err);
+      res.status(500).json({
+        message: "Lỗi chỉnh sửa tài khoản",
+      });
+    }
   }
+
   deleteOneEmployee(req, res) {
     const id = req.params.id;
     Employee.deleteEmloyee(id, (err, results) => {

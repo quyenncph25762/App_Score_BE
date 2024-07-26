@@ -1,6 +1,9 @@
 import Employee from "../models/Employee";
 import ScorefileModle from "../models/Scorefile";
+import Scoretemp from "../models/Scoretemp";
+import generateRandomString from "../middlewares/generate";
 import jwt from "jsonwebtoken";
+import { message } from "antd";
 class ScorefileController {
   getScorefile_ByEmployeeId(req, res) {
     let token = req.cookies.Countryside;
@@ -52,47 +55,174 @@ class ScorefileController {
     );
   }
   create_Scorefile(req, res) {
-    let token = req.cookies.Countryside;
-    let par = jwt.verify(token, process.env.SECRET);
-    let id = par._id;
-    const form = { EmployeeId: id, ...req.body };
-    const listScoreFileDetail = req.body.listScoreFileDetail;
-    ScorefileModle.createScorefile(form, async (err, results) => {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        try {
-          const ScorefileId = results.insertId;
-          if (listScoreFileDetail) {
-            for (const item of listScoreFileDetail) {
-              const forms = {
-                ScorefileId: ScorefileId,
-                CriteriaDetailId: item.CriteriaDetailId,
-                EmployeeId: id,
-                TypePercentValue: item.TypePercentValue,
-                TypeTotalValue: item.TypeTotalValue,
-                CurrentStatusValue: item.CurrentStatusValue,
-              };
-              await new Promise((resolve, reject) => {
-                ScorefileModle.creatScoreFile_Detail(forms, (err, data) => {
+    const { EmployeeId, YearId, ObjectId } = req.body;
+
+    const ListScoreTempIds = [];
+    const ListScoreTempIdsToRemove = [];
+    const ListdataIds = [];
+    // kiểm tra xem phiếu đã có chưa ?
+    Scoretemp.getScoreTemp_YearAndObject_to_get_id(
+      ObjectId,
+      YearId,
+      async (err, datas) => {
+        if (err) {
+          console.log(err);
+        } else {
+          datas.map((data) => {
+            ListdataIds.push(data._id);
+          });
+
+          for (const scoretempId of ListdataIds) {
+            const dataScorefile = await new Promise((resolve, reject) => {
+              // kiểm tra xem scorefile đã có chưa
+              ScorefileModle.getScorefile_ScoreTempId_EmployeeId_YearId(
+                scoretempId,
+                EmployeeId,
+                YearId,
+                (err, scorefile) => {
                   if (err) {
                     reject(err);
                   } else {
-                    resolve(data);
+                    resolve(scorefile);
                   }
-                });
-              });
+                }
+              );
+            });
+            if (dataScorefile.length === 1) {
+              ListScoreTempIdsToRemove.push(scoretempId);
+            } else if (dataScorefile.length === 0) {
+              //chưa có push vào mảng
+              ListScoreTempIds.push(scoretempId);
             }
           }
-          res.status(200).json({
-            message: "Tạo phiếu thành công",
-          });
-        } catch (error) {
-          console.log("Error", error);
-          res.status(500).json({ message: "Internal Server Error" });
+          ScorefileModle.deleteScorefile_ScoretempId_EmployeeId_YearId(
+            ListScoreTempIdsToRemove,
+            EmployeeId,
+            YearId,
+            (err, results) => {
+              if (err) {
+                console.log("Error", err);
+              } else {
+                res.json({ message: "Phát phiếu thành công" });
+              }
+            }
+          );
+          // kiểm tra nếu như mảng id đã có được tạo hết chưa
+          if (ListScoreTempIds.length === 0) {
+            res.json({
+              message: "Các phiếu đã được phát rồi !",
+            });
+          } else {
+            Scoretemp.getObjectId_scoretempIdAndYearId(
+              ListScoreTempIds,
+              YearId,
+              (err, objectIds) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                  // lấy danh sách các object chưa được tạo
+                  const ListObjectId = [];
+                  objectIds.map((item) => {
+                    ListObjectId.push(item.ObjectId);
+                  });
+                  // lấy phiếu theo object để tạo scorefile
+                  Scoretemp.getOneScoretemp_to_YearAndObject(
+                    ListObjectId,
+                    YearId,
+                    async (err, results) => {
+                      if (err) {
+                        console.log("Error", err);
+                      } else {
+                        try {
+                          const data = {
+                            scorefile: [],
+                          };
+                          const ScorefileMap = new Map();
+                          results.map(async (item) => {
+                            if (!ScorefileMap.has(item._id)) {
+                              ScorefileMap.set(item._id, {
+                                ScoreTempId: item._id,
+                                EmployeeId: EmployeeId,
+                                Code: generateRandomString(8),
+                                YearId: YearId,
+                                listScoreFileDetail: [],
+                              });
+                            }
+                            const scorefileDetail = ScorefileMap.get(item._id);
+                            scorefileDetail.listScoreFileDetail.push({
+                              CriteriaDetailId: item.ScoretempDetail_id,
+                              EmployeeId: EmployeeId,
+                            });
+                          });
+                          data.scorefile = Array.from(ScorefileMap.values());
+                          //danh sách phát phiếu
+                          const ListData = data.scorefile;
+
+                          // tạo phiếu
+                          for (const element of ListData) {
+                            const form = {
+                              EmployeeId: element.EmployeeId,
+                              ScoreTempId: element.ScoreTempId,
+                              YearId: element.YearId,
+                              Code: element.Code,
+                            };
+                            // tạo scorefile
+                            const dataScorefile = await new Promise(
+                              (resolve, reject) => {
+                                ScorefileModle.createScorefile(
+                                  form,
+                                  (err, results) => {
+                                    if (err) {
+                                      reject(err);
+                                    } else {
+                                      resolve(results);
+                                    }
+                                  }
+                                );
+                              }
+                            );
+                            // lấy id của scorefile
+                            const ScorefileId = dataScorefile.insertId;
+                            if (element.listScoreFileDetail) {
+                              for (const item of element.listScoreFileDetail) {
+                                const forms = {
+                                  ScorefileId: ScorefileId,
+                                  CriteriaDetailId: item.CriteriaDetailId,
+                                  EmployeeId: item.EmployeeId,
+                                };
+                                await new Promise((resolve, reject) => {
+                                  ScorefileModle.creatScoreFile_Detail(
+                                    forms,
+                                    (err, data) => {
+                                      if (err) {
+                                        reject(err);
+                                      } else {
+                                        resolve(data);
+                                      }
+                                    }
+                                  );
+                                });
+                              }
+                            }
+                          }
+                          res.status(200).json({
+                            message: "Phát phiếu thành công",
+                          });
+                        } catch (error) {
+                          console.log("Error", error);
+                        }
+                      }
+                    }
+                  );
+                }
+              }
+            );
+          }
+
+          // tạo scorefile từ danh sách
         }
       }
-    });
+    );
   }
   update_Scorefile(req, res) {
     const id = req.params.id;

@@ -1,13 +1,19 @@
+import { query } from "express";
 import connection from "../config/db";
-import Employee from "./Employee";
 const ScorefileModle = {
   getScorefile_ByEmployee: (EmployeeId, callback) => {
-    const query = `SELECT scorefile.*,
-    scoretemp.Name AS NameScoretemp
-    FROM scorefile
-    JOIN scoretemp ON scorefile.ScoreTempId = scoretemp._id
-    WHERE scorefile.IsDeleted = 0 AND scorefile.EmployeeId = ?`;
-    connection.query(query, EmployeeId, callback);
+    const query = `
+    SELECT 
+    s._id AS IdScoretemp,
+    s.Name AS NameScoretemp,
+    s.YearId AS YearId, 
+    y.Name AS NameYear
+    FROM object_employee o
+   JOIN scoretemp s ON o.ObjectId = s.ObjectId
+    JOIN year y ON s.YearId = y._id
+    WHERE o.IsDeleted = 0 AND o.EmployeeId = ?
+    `;
+    connection.query(query, [EmployeeId], callback);
   },
   getOneScorefile_ByEmployee: (id, EmployeeId, callback) => {
     const query = `
@@ -23,15 +29,23 @@ const ScorefileModle = {
     `;
     connection.query(query, [id, EmployeeId], callback);
   },
+
+  getScorefile_ScoreTempId_EmployeeId_YearId: (
+    ScoreTempId,
+    EmployeeId,
+    YearId,
+    callback
+  ) => {
+    const query = `SELECT * FROM scorefile WHERE ScoreTempId =? AND EmployeeId = ? AND YearId = ?`;
+    connection.query(query, [ScoreTempId, EmployeeId, YearId], callback);
+  },
   createScorefile: (scorefile, callback) => {
-    const query = `INSERT INTO scorefile (EmployeeId,ScoreTempId,Code,Score,Status,IsActive) VALUES (?,?,?,?,?,?)`;
+    const query = `INSERT INTO scorefile (EmployeeId,ScoreTempId,YearId,Code) VALUES (?,?,?,?)`;
     const values = [
       scorefile.EmployeeId,
       scorefile.ScoreTempId,
+      scorefile.YearId,
       scorefile.Code,
-      scorefile.Score,
-      scorefile.Status,
-      scorefile.IsActive,
     ];
     connection.query(query, values, callback);
   },
@@ -44,6 +58,15 @@ const ScorefileModle = {
     const query = `UPDATE scorefile SET IsDeleted = 1 WHERE _id IN(?)`;
     connection.query(query, [id], callback);
   },
+  deleteScorefile_ScoretempId_EmployeeId_YearId: (
+    ScoretempId,
+    EmployeeId,
+    YearId
+  ) => {
+    const query =
+      "DELETE  FROM scorefile WHERE ScoreTempId NOT IN(?) AND EmployeeId = ? AND YearId = ? AND Status = 0 AND IsDeleted = 0";
+    connection.query(query, [ScoretempId, EmployeeId, YearId]);
+  },
   restoreScorefile: (id, callback) => {
     const query = `UPDATE scorefile SET IsDeleted = 0 WHERE _id IN(?)`;
     connection.query(query, [id], callback);
@@ -51,14 +74,11 @@ const ScorefileModle = {
   // scoreFile Detail
   creatScoreFile_Detail: (scorefile, callback) => {
     const query =
-      "INSERT INTO scorefile_detail (ScorefileId,CriteriaDetailId,EmployeeId,TypePercentValue,TypeTotalValue,CurrentStatusValue) VALUES (?,?,?,?,?,?)";
+      "INSERT INTO scorefile_detail (ScorefileId,CriteriaDetailId,EmployeeId) VALUES (?,?,?)";
     const values = [
       scorefile.ScorefileId,
       scorefile.CriteriaDetailId,
       scorefile.EmployeeId,
-      scorefile.TypePercentValue,
-      scorefile.TypeTotalValue,
-      scorefile.CurrentStatusValue,
     ];
     connection.query(query, values, callback);
   },
