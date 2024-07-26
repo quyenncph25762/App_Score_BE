@@ -10,6 +10,7 @@ const ScorefileModle = {
     s.YearId AS YearId, 
     y.Name AS NameYear,
     sf.IsActive AS IsActive,
+    sf._id AS _id,
     sf.Code AS Code
     FROM scorefile sf
     JOIN scoretemp s ON sf.ScoreTempId = s._id
@@ -29,6 +30,7 @@ const ScorefileModle = {
     sf.IsActive AS IsActive,
     sf.Code AS Code,
     sf.Score AS Score,
+    sf._id AS _id,
     sf.Status AS Status
     FROM scorefile sf
     JOIN scoretemp s ON sf.ScoreTempId = s._id
@@ -48,7 +50,8 @@ const ScorefileModle = {
     sf.IsActive AS IsActive,
     sf.Code AS Code,
     sf.Score AS Score,
-    sf.Status AS Status
+    sf.Status AS Status,
+    sf._id AS _id
     FROM scorefile sf
     JOIN scoretemp s ON sf.ScoreTempId = s._id
     JOIN year y ON sf.YearId = y._id
@@ -56,6 +59,7 @@ const ScorefileModle = {
     `;
     connection.query(query, [EmployeeId], callback);
   },
+  // lấy danh sách scorefile theo employee
   getOneScorefile_ByEmployee: (id, EmployeeId, callback) => {
     const query = `
     SELECT scorefile.*,
@@ -70,7 +74,6 @@ const ScorefileModle = {
     `;
     connection.query(query, [id, EmployeeId], callback);
   },
-
   getScorefile_ScoreTempId_EmployeeId_YearId: (
     ScoreTempId,
     EmployeeId,

@@ -33,7 +33,7 @@ const Employee = {
     connection.query(query, CityId, callback);
   },
   // lấy theo huyện
-  getEmployeeByDistrict: (DistrictId, callback) => {
+  getEmployeeAdminDistrict: (EmployeeId, callback) => {
     const query = `SELECT employee.*,
     city.Name AS NameCity,
     district.Name AS NameAddress,
@@ -44,23 +44,22 @@ const Employee = {
     JOIN ward ON employee.WardId = ward._id
     WHERE IsDeleted = 0 AND DistrictId = ?
     `;
-    connection.query(query, DistrictId, callback);
+    connection.query(query, EmployeeId, callback);
   },
-
   // lấy theo xã
-  getEmployeeByWard: (WardId, callback) => {
-    const query = `SELECT employee.*,
-    city.Name AS NameCity,
-    district.Name AS NameAddress,
-    ward.Name AS NameWard
-    FROM employee
-    JOIN city ON employee.cityId = city._id
-    JOIN district ON employee.DistrictId = district._id
-    JOIN ward ON employee.WardId = ward._id
-    WHERE IsDeleted = 0 AND WardId = ?
-    `;
-    connection.query(query, WardId, callback);
-  },
+  // getEmployeeByWard: (WardId, callback) => {
+  //   const query = `SELECT employee.*,
+  //   city.Name AS NameCity,
+  //   district.Name AS NameAddress,
+  //   ward.Name AS NameWard
+  //   FROM employee
+  //   JOIN city ON employee.cityId = city._id
+  //   JOIN district ON employee.DistrictId = district._id
+  //   JOIN ward ON employee.WardId = ward._id
+  //   WHERE IsDeleted = 0 AND WardId = ?
+  //   `;
+  //   connection.query(query, WardId, callback);
+  // },
   // kiểm tra tài khoản tồn tại
   getEmployeeBy_EmailAndUserName: (Email, UserName, callback) => {
     const query =

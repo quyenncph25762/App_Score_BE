@@ -12,15 +12,14 @@ class EmployeeController {
         if (results.length > 0) {
           const data = results[0];
           const token = jwt.sign({ _id: data._id }, process.env.SECRET);
-
           res.cookie(process.env.COOKIE, token, {
             httpOnly: true,
-            secure: true,
+            secure: false,
           });
-
           res.status(200).json({
             name: data.FullName,
             avatar: data.Avatar,
+            token: token, 
           });
         } else {
           res.status(400).json({
@@ -88,7 +87,7 @@ class EmployeeController {
     const Email = req.body.Email;
     const UserName = req.body.UserName;
     const FieldIds = req.body.Fields;
- 
+
     Employee.getEmployeeBy_EmailAndUserName(Email, UserName, (err, data) => {
       if (err) {
         console.log("Error", err);
@@ -128,8 +127,7 @@ class EmployeeController {
                   .catch((err) => {
                     console.log("Error", err);
                   });
-              }
-               else {
+              } else {
                 res.status(200).json({
                   messager: "Thêm tài khoản thành công",
                 });

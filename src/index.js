@@ -6,9 +6,15 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 dotenv.config();
-app.use(cors())
-app.use(express.json());
 app.use(cookieParser()); // Để xử lý cookies
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Địa chỉ frontend của bạn
+    credentials: true,
+  })
+);
+app.use(express.json());
+
 route(app);
 db.connection;
 

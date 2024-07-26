@@ -3,7 +3,6 @@ import ScorefileModle from "../models/Scorefile";
 import Scoretemp from "../models/Scoretemp";
 import generateRandomString from "../middlewares/generate";
 import jwt from "jsonwebtoken";
-import { message } from "antd";
 class ScorefileController {
   // lấy những phiếu chờ duyệt
   getScorefile_ByEmployeeId_Inactive(req, res) {
@@ -41,6 +40,7 @@ class ScorefileController {
         console.log("Error", err);
       } else {
         res.status(200).json(results);
+        
       }
     });
   }
@@ -57,7 +57,7 @@ class ScorefileController {
         if (err) {
           console.log("Error", err);
         } else {
-          console.log(results);
+        
           const data = {
             EmployeeId: results[0].EmployeeId,
             ScoreTempId: results[0].ScoreTempId,
