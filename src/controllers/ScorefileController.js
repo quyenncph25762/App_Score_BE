@@ -5,11 +5,11 @@ import generateRandomString from "../middlewares/generate";
 import jwt from "jsonwebtoken";
 import { message } from "antd";
 class ScorefileController {
-  getScorefile_ByEmployeeId(req, res) {
+  getScorefile_ByEmployeeId_Inactive(req, res) {
     let token = req.cookies.Countryside;
     let par = jwt.verify(token, process.env.SECRET);
     let id = par._id;
-    ScorefileModle.getScorefile_ByEmployee(id, (err, results) => {
+    ScorefileModle.getScorefile_ByEmployee_Inactive(id, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -17,6 +17,19 @@ class ScorefileController {
       }
     });
   }
+  getScorefile_ByEmployeeId_ActiveNow(req, res) {
+    let token = req.cookies.Countryside;
+    let par = jwt.verify(token, process.env.SECRET);
+    let id = par._id;
+    ScorefileModle.getScorefile_ByEmployee_ActiveNow(id, (err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  }
+  // xem chi tiết phiếu
   getOne_Scorefile(req, res) {
     let token = req.cookies.Countryside;
     let par = jwt.verify(token, process.env.SECRET);
@@ -29,6 +42,7 @@ class ScorefileController {
         if (err) {
           console.log("Error", err);
         } else {
+          console.log(results)
           const data = {
             EmployeeId: results[0].EmployeeId,
             ScoreTempId: results[0].ScoreTempId,
@@ -56,8 +70,9 @@ class ScorefileController {
   }
   create_Scorefile(req, res) {
     const { EmployeeId, YearId, ObjectId } = req.body;
-
+    // danh sách tạo ssorefile
     const ListScoreTempIds = [];
+    // xóa những scorefile k có trong mảng
     const ListScoreTempIdsToRemove = [];
     const ListdataIds = [];
     // kiểm tra xem phiếu đã có chưa ?
@@ -95,6 +110,7 @@ class ScorefileController {
               ListScoreTempIds.push(scoretempId);
             }
           }
+          // xóa những scorefile k được nhận
           ScorefileModle.deleteScorefile_ScoretempId_EmployeeId_YearId(
             ListScoreTempIdsToRemove,
             EmployeeId,
@@ -218,8 +234,6 @@ class ScorefileController {
               }
             );
           }
-
-          // tạo scorefile từ danh sách
         }
       }
     );

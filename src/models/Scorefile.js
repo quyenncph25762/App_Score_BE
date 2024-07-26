@@ -1,17 +1,39 @@
 import { query } from "express";
 import connection from "../config/db";
 const ScorefileModle = {
-  getScorefile_ByEmployee: (EmployeeId, callback) => {
+  // lấy scorefie chờ xác nhận
+  getScorefile_ByEmployee_Inactive: (EmployeeId, callback) => {
     const query = `
     SELECT 
     s._id AS IdScoretemp,
     s.Name AS NameScoretemp,
     s.YearId AS YearId, 
-    y.Name AS NameYear
-    FROM object_employee o
-   JOIN scoretemp s ON o.ObjectId = s.ObjectId
-    JOIN year y ON s.YearId = y._id
-    WHERE o.IsDeleted = 0 AND o.EmployeeId = ?
+    y.Name AS NameYear,
+    sf.IsActive AS IsActive,
+    sf.Code AS Code
+    FROM scorefile sf
+    JOIN scoretemp s ON sf.ScoreTempId = s._id
+    JOIN year y ON sf.YearId = y._id
+    WHERE sf.IsDeleted = 0 AND sf.EmployeeId = ? AND sf.IsActive = 0
+    `;
+    connection.query(query, [EmployeeId], callback);
+  },
+  // lấy scorefile đã xác nhận từ employee
+  getScorefile_ByEmployee_ActiveNow: (EmployeeId, callback) => {
+    const query = `
+    SELECT 
+    s._id AS IdScoretemp,
+    s.Name AS NameScoretemp,
+    s.YearId AS YearId, 
+    y.Name AS NameYear,
+    sf.IsActive AS IsActive,
+    sf.Code AS Code,
+    sf.Score AS Score,
+    sf.Status AS Status
+    FROM scorefile sf
+    JOIN scoretemp s ON sf.ScoreTempId = s._id
+    JOIN year y ON sf.YearId = y._id
+    WHERE sf.IsDeleted = 0 AND sf.EmployeeId = ? AND sf.IsActive = 1
     `;
     connection.query(query, [EmployeeId], callback);
   },
@@ -25,7 +47,7 @@ const ScorefileModle = {
     d.CurrentStatusValue AS CurrentStatusValue
     FROM scorefile
     LEFT JOIN scorefile_detail d ON scorefile._id = d.ScorefileId
-    WHERE scorefile.IsDeleted = 0 AND scorefile._id = ?
+    WHERE scorefile.IsDeleted = 0 AND scorefile._id = ? AND scorefile.IsActive = 1
     `;
     connection.query(query, [id, EmployeeId], callback);
   },
@@ -64,7 +86,7 @@ const ScorefileModle = {
     YearId
   ) => {
     const query =
-      "DELETE  FROM scorefile WHERE ScoreTempId NOT IN(?) AND EmployeeId = ? AND YearId = ? AND Status = 0 AND IsDeleted = 0";
+      "DELETE  FROM scorefile WHERE ScoreTempId NOT IN(?) AND EmployeeId = ? AND YearId = ? AND IsActive = 0 AND IsDeleted = 0";
     connection.query(query, [ScoretempId, EmployeeId, YearId]);
   },
   restoreScorefile: (id, callback) => {

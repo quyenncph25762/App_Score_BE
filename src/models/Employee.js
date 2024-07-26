@@ -74,13 +74,12 @@ const Employee = {
     city.Name AS NameCity,
     district.Name AS NameDistrict,
     ward.Name AS NameWard,
-    object.NameObject AS ObjectName,
     role.NameRole AS RoleName
     FROM employee
     JOIN city ON employee.cityId = city._id
     JOIN district ON employee.DistrictId = district._id
     JOIN ward ON employee.WardId = ward._id
-    JOIN object ON employee.ObjectId = object._id
+   
     JOIN role ON employee.RoleId = role._id
     WHERE employee.IsDeleted = 0 AND employee._id = ?
     `;

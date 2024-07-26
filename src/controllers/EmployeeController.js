@@ -145,7 +145,6 @@ class EmployeeController {
     const FieldIds = req.body.Fields;
     try {
       await Employee.deleteField_Employee(EmployeeId);
-      await Employee.deleteObject_Employee(EmployeeId);
 
       const updateData = { ...req.body, EmployeeId };
       await Employee.updateEmployee(EmployeeId, updateData);

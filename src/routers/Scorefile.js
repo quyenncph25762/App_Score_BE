@@ -3,7 +3,14 @@ import ScorefileController from "../controllers/ScorefileController";
 const route = express.Router();
 
 route.post("/create-scorefile", ScorefileController.create_Scorefile);
-route.get("/get-scorefile", ScorefileController.getScorefile_ByEmployeeId);
+route.get(
+  "/get-scorefile-inactive",
+  ScorefileController.getScorefile_ByEmployeeId_Inactive
+);
+route.get(
+  "/get-scorefile-active-now",
+  ScorefileController.getScorefile_ByEmployeeId_ActiveNow
+);
 route.get("/:id/getone-scorefile", ScorefileController.getOne_Scorefile);
 route.patch("/:id/update-scorefile", ScorefileController.update_Scorefile);
 
