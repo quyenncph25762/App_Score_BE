@@ -45,7 +45,7 @@ const ScorefileModle = {
     const query = `
     SELECT 
     s._id AS IdScoretemp,
-    s.Name AS NameScoretemp,
+    s.Name AS NameScoreTemp,
     s.YearId AS YearId, 
     y.Name AS NameYear,
     sf.IsActive AS IsActive,

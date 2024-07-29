@@ -145,7 +145,7 @@ class EmployeeController {
       await Employee.deleteField_Employee(EmployeeId);
 
       const updateData = { ...req.body, EmployeeId };
-      console.log(updateData);
+      
       await Employee.updateEmployee(EmployeeId, updateData);
 
       // Process FieldIds if it exists

@@ -4,6 +4,7 @@ import Scoretemp from "../models/Scoretemp";
 import Criteria from "../models/Criteria";
 import generateRandomString from "../middlewares/generate";
 import jwt from "jsonwebtoken";
+import { message } from "antd";
 class ScorefileController {
   // lấy những phiếu chờ duyệt
   getScorefile_ByEmployeeId_Inactive(req, res) {
@@ -122,49 +123,57 @@ class ScorefileController {
                       CriteriaId.push(item._id);
                     });
                     // lấy dc Id_criteriaDetail
-                    Criteria.getDetailCriteria_ScorefileDetail_ByCriteriaId(
-                      idScorefile,
-                      CriteriaId,
-                      idEmployee,
-                      (err, results) => {
-                        if (err) {
-                          console.log("Error", err);
-                        } else {
-                          let data = {
-                            ScorefileId: idScorefile,
-                            NameScoreTemp: scorefile[0].NameScoreTemp,
-                            Criteria: [],
-                          };
-                          const CriteriaMap = new Map();
-                          results.forEach((element) => {
-                            if (!CriteriaMap.has(element.IdCriteria)) {
-                              CriteriaMap.set(element.IdCriteria, {
-                                _id: element._id,
-                                Name: element.NameCriteria,
-                                IsTypePercent: element.IsTypePercent,
-                                IsTypeTotal: element.IsTypeTotal,
-                                IsCurrentStatusType:
-                                  element.IsCurrentStatusType,
-                                ScoreFileDetail: [],
+                    if (CriteriaId) {
+                      Criteria.getDetailCriteria_ScorefileDetail_ByCriteriaId(
+                        idScorefile,
+                        CriteriaId,
+                        idEmployee,
+                        (err, results) => {
+                          if (err) {
+                            console.log("Error", err);
+                          } else {
+                            let data = {
+                              ScorefileId: idScorefile,
+                              NameScoreTemp: scorefile[0].NameScoreTemp,
+                              Criteria: [],
+                            };
+                            const CriteriaMap = new Map();
+                            results.forEach((element) => {
+                              if (!CriteriaMap.has(element.IdCriteria)) {
+                                CriteriaMap.set(element.IdCriteria, {
+                                  _id: element._id,
+                                  Name: element.NameCriteria,
+                                  IsTypePercent: element.IsTypePercent,
+                                  IsTypeTotal: element.IsTypeTotal,
+                                  IsCurrentStatusType:
+                                    element.IsCurrentStatusType,
+                                  listCriteria: [],
+                                });
+                              }
+                              const getCriteriatoMap = CriteriaMap.get(
+                                element.IdCriteria
+                              );
+                              getCriteriatoMap.listCriteria.push({
+                                _id: element.IdScoreFile_Detail,
+                                Name: element.Name,
+                                TypePercentValue: element.TypePercentValue,
+                                TypeTotalValue: element.TypeTotalValue,
+                                CurrentStatusValue: element.CurrentStatusValue,
                               });
-                            }
-                            const getCriteriatoMap = CriteriaMap.get(
-                              element.IdCriteria
-                            );
-                            getCriteriatoMap.ScoreFileDetail.push({
-                              _id: element.IdScoreFile_Detail,
-                              Name: element.Name,
-                              TypePercentValue: element.TypePercentValue,
-                              TypeTotalValue: element.TypeTotalValue,
-                              CurrentStatusValue: element.CurrentStatusValue,
                             });
-                          });
-                          data.Criteria = Array.from(CriteriaMap.values());
-
-                          res.status(200).json(data);
+                            data.Criteria = Array.from(CriteriaMap.values());
+                            res.status(200).json(data);
+                          }
                         }
-                      }
-                    );
+                      );
+                    } else {
+                      res
+                        .status(500)
+                        .json({
+                          message:
+                            "Phiếu này không có lĩnh vực phù hợp với tài khoản",
+                        });
+                    }
                   }
                 }
               );
