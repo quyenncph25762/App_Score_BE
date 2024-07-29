@@ -4,7 +4,6 @@ import Scoretemp from "../models/Scoretemp";
 import Criteria from "../models/Criteria";
 import generateRandomString from "../middlewares/generate";
 import jwt from "jsonwebtoken";
-import { message } from "antd";
 class ScorefileController {
   // lấy những phiếu chờ duyệt
   getScorefile_ByEmployeeId_Inactive(req, res) {
@@ -132,16 +131,16 @@ class ScorefileController {
                           console.log("Error", err);
                         } else {
                           let data = {
-                            ScorefileId: idScorefile,
-                            NameScoreTemp: scorefile[0].NameScoreTemp,
+                            _id: idScorefile,
+                            Name: scorefile[0].NameScoreTemp,
                             Criteria: [],
                           };
                           const CriteriaMap = new Map();
                           results.forEach((element) => {
                             if (!CriteriaMap.has(element.IdCriteria)) {
                               CriteriaMap.set(element.IdCriteria, {
-                                IdCriteria: element._id,
-                                NameCriteria: element.NameCriteria,
+                                _id: element._id,
+                                Name: element.NameCriteria,
                                 IsTypePercent: element.IsTypePercent,
                                 IsTypeTotal: element.IsTypeTotal,
                                 IsCurrentStatusType:
@@ -153,8 +152,8 @@ class ScorefileController {
                               element.IdCriteria
                             );
                             getCriteriatoMap.ScoreFileDetail.push({
-                              IdScoreFile_Detail: element.IdScoreFile_Detail,
-                              NameCriteriaDetail: element.Name,
+                              _id: element.IdScoreFile_Detail,
+                              Name: element.Name,
                               TypePercentValue: element.TypePercentValue,
                               TypeTotalValue: element.TypeTotalValue,
                               CurrentStatusValue: element.CurrentStatusValue,

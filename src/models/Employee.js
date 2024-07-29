@@ -129,7 +129,7 @@ const Employee = {
   updateEmployee: (id, Employee) => {
     try {
       const query =
-        "UPDATE employee SET RoleId = ?,CityId = ?,DistrictId = ?,WardId = ?,ApartmentId = ?,Customer = ?,Avatar = ?,FullName = ?,Email = ?,Phone = ?,UserName = ?,Password = ?,CreatorUserId = ?,IsActive = ? WHERE _id = ?";
+        "UPDATE employee SET RoleId = ?,CityId = ?,DistrictId = ?,WardId = ?,ApartmentId = ?,Customer = ?,Avatar = ?,FullName = ?,Email = ?,Phone = ?,UserName = ?,CreatorUserId = ?,IsActive = ? WHERE _id = ?";
       const values = [
         Employee.RoleId,
         Employee.CityId,
@@ -142,7 +142,6 @@ const Employee = {
         Employee.Email,
         Employee.Phone,
         Employee.UserName,
-        Employee.Password,
         Employee.CreatorUserId,
         Employee.IsActive,
         id,
@@ -179,6 +178,5 @@ const Employee = {
     const query = "SELECT * FROM field_employee WHERE EmployeeId = ?";
     connection.query(query, EmployeeId, callback);
   },
-
 };
 export default Employee;

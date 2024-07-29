@@ -1,6 +1,5 @@
 import Scoretemp from "../models/Scoretemp";
 import CriteriaModle from "../models/Criteria";
-import generateRandomString from "../middlewares/generate";
 class ScoretempController {
   getAllScoretemp(req, res) {
     Scoretemp.getAllScoretemp((err, results) => {

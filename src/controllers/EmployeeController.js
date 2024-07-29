@@ -19,7 +19,7 @@ class EmployeeController {
           res.status(200).json({
             name: data.FullName,
             avatar: data.Avatar,
-            token: token, 
+            token: token,
           });
         } else {
           res.status(400).json({
@@ -145,6 +145,7 @@ class EmployeeController {
       await Employee.deleteField_Employee(EmployeeId);
 
       const updateData = { ...req.body, EmployeeId };
+      console.log(updateData);
       await Employee.updateEmployee(EmployeeId, updateData);
 
       // Process FieldIds if it exists
