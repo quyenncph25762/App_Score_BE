@@ -131,8 +131,8 @@ class ScorefileController {
                           console.log("Error", err);
                         } else {
                           let data = {
-                            _id: idScorefile,
-                            Name: scorefile[0].NameScoreTemp,
+                            ScorefileId: idScorefile,
+                            NameScoreTemp: scorefile[0].NameScoreTemp,
                             Criteria: [],
                           };
                           const CriteriaMap = new Map();
@@ -161,7 +161,7 @@ class ScorefileController {
                           });
                           data.Criteria = Array.from(CriteriaMap.values());
 
-                          res.json(data);
+                          res.status(200).json(data);
                         }
                       }
                     );
