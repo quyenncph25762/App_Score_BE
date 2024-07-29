@@ -1,5 +1,6 @@
 import { query } from "express";
 import connection from "../config/db";
+import Employee from "./Employee";
 const ScorefileModle = {
   // lấy scorefie chờ xác nhận
   getScorefile_ByEmployee_Inactive: (EmployeeId, callback) => {
@@ -59,7 +60,7 @@ const ScorefileModle = {
     `;
     connection.query(query, [EmployeeId], callback);
   },
-  // lấy danh sách scorefile theo employee
+  // lấy scorefile theo employee cấp xã
   getOneScorefile_ByEmployee: (id, EmployeeId, callback) => {
     const query = `
     SELECT scorefile.*,
@@ -74,6 +75,15 @@ const ScorefileModle = {
     `;
     connection.query(query, [id, EmployeeId], callback);
   },
+  getScoreTempId_IdScorefile: (id, callback) => {
+    const query = `SELECT s.*,
+    st.Name AS NameScoreTemp
+    FROM scorefile s
+    JOIN scoretemp st ON s.ScoreTempId = st._id
+    WHERE s._id = ?`;
+    connection.query(query, id, callback);
+  },
+
   getScorefile_ScoreTempId_EmployeeId_YearId: (
     ScoreTempId,
     EmployeeId,
@@ -93,8 +103,13 @@ const ScorefileModle = {
     ];
     connection.query(query, values, callback);
   },
+  update_ActiveScorefile: (id, EmployeeId, callback) => {
+    const query =
+      "UPDATE scorefile SET IsActive = 1 WHERE _id = ? AND EmployeeId = ?";
+    connection.query(query, [id, EmployeeId], callback);
+  },
   updateScorefile: (id, scorefile, callback) => {
-    const query = `UPDATE scorefile SET Score  = ?,Status  = ?,IsActive  = ? WHERE _id IN(?)`;
+    const query = `UPDATE scorefile SET Score  = ?,Status = ?,IsActive  = ? WHERE _id IN(?)`;
     const values = [scorefile.Score, scorefile.Status, scorefile.IsActive, id];
     connection.query(query, values, callback);
   },
@@ -116,6 +131,16 @@ const ScorefileModle = {
     connection.query(query, [id], callback);
   },
   // scoreFile Detail
+
+  getScorefileDetail_ByScoreFile_CriteriaDetail_Employee: (
+    Scorefile,
+    CriteriaDetail,
+    Employee,
+    callback
+  ) => {
+    const query = `SELECT * FROM scorefile_detail WHERE ScorefileId = ? AND CriteriaDetailId IN(?) AND EmployeeId = ? AND IsDeleted =0`;
+    connection.query(query, [Scorefile, CriteriaDetail, Employee], callback);
+  },
   creatScoreFile_Detail: (scorefile, callback) => {
     const query =
       "INSERT INTO scorefile_detail (ScorefileId,CriteriaDetailId,EmployeeId) VALUES (?,?,?)";

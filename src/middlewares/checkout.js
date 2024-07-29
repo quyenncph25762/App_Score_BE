@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import Employee from "../models/Employee";
 class Checkout {
   checkAdmin(req, res, next) {
-    let token = req.cookies.Countryside;
+    let token = req.cookies[process.env.COOKIE];
     let par = jwt.verify(token, process.env.SECRET);
     Employee.getOneEmployeeById(par._id, (err, results) => {
       if (err) {

@@ -13,6 +13,10 @@ const Criteria = {
     WHERE criteria.IsDeleted = 0 AND criteria.ScoretempId = ?`;
     connection.query(query, ScoretempId, callback);
   },
+  getCiteria_ByScoreTemId_FieldId(ScoreTempId, FieldId, callback) {
+    const query = `SELECT * FROM criteria WHERE ScoreTempId  = ? AND FieldId IN(?) AND IsDeleted = 0`;
+    connection.query(query, [ScoreTempId, FieldId], callback);
+  },
   createCriteria: (criteria, callback) => {
     const query =
       "INSERT INTO criteria (ScoreTempId,Name,FieldId) VALUES (?,?,?)";
@@ -25,13 +29,24 @@ const Criteria = {
   },
 
   //detail criteria
-  getDetailCriteria_ByCriteriaId: (CriteriaId, callback) => {
-    const query = `SELECT criteria_detail.*,
-      criteria.Name as NameCriteria
-      FROM criteria_detail
-      JOIN criteria ON criteria_detail.Criteria = criteria._id
-      WHERE criteria_detail.IsDeleted = 0 AND criteria_detail.CriteriaId = ?`;
-    connection.query(query, CriteriaId, callback);
+  getDetailCriteria_ScorefileDetail_ByCriteriaId: (
+    ScoreFileId,
+    CriteriaId,
+    EmployeeId,
+    callback
+  ) => {
+    const query = `SELECT cd.*,
+      c.Name AS NameCriteria,
+      c._id AS IdCriteria,
+      sd._id AS IdScoreFile_Detail,
+      sd.TypePercentValue AS TypePercentValue,
+      sd.TypeTotalValue AS TypeTotalValue,
+      sd.CurrentStatusValue AS CurrentStatusValue
+      FROM criteria_detail cd
+      JOIN criteria c ON cd.CriteriaId = c._id
+      JOIN scorefile_detail sd ON cd._id = sd.CriteriaDetailId
+      WHERE cd.IsDeleted = 0 AND sd.ScorefileId = ? AND cd.CriteriaId IN(?) AND sd.EmployeeId = ?`;
+    connection.query(query, [ScoreFileId, CriteriaId, EmployeeId], callback);
   },
   createDetailCriteria: (detailCriteria, callback) => {
     const query =

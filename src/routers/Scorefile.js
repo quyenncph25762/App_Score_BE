@@ -15,8 +15,14 @@ route.get(
 );
 // lấy tất cả scorefile
 route.get("/get-scorefile", ScorefileController.getScorefile_ByEmployeeId);
-// lấy scorefile theo id
+// lấy scorefile theo id cấp xã
 route.get("/:id/getone-scorefile", ScorefileController.getOne_Scorefile);
+
+//
+route.get(
+  "/:id/get-one-scorefile-employee-field",
+  ScorefileController.getOne_Scorefile_ByEmployeeAndField
+);
 route.patch("/:id/update-scorefile", ScorefileController.update_Scorefile);
 
 route.patch("/:id/delete-scorefile", ScorefileController.deleteOne_Scorefile);
