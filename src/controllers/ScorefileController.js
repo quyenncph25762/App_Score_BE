@@ -153,6 +153,7 @@ class ScorefileController {
                               getCriteriatoMap.listCriteria.push({
                                 _id: element.IdScoreFile_Detail,
                                 Name: element.Name,
+                                Target: element.Target,
                                 IsTypePercent: element.IsTypePercent,
                                 IsTypeTotal: element.IsTypeTotal,
                                 IsCurrentStatusType:
@@ -163,7 +164,7 @@ class ScorefileController {
                               });
                             });
                             data.Criteria = Array.from(CriteriaMap.values());
-                            res.status(200).json(data);
+                            res.status(200).json(results);
                           }
                         }
                       );
