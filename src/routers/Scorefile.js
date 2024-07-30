@@ -29,8 +29,8 @@ route.patch(
   "/:id/update-active-scorefile",
   ScorefileController.update_ActiveScorefile
 );
-
-route.patch("/:id/update-scorefile", ScorefileController.update_Scorefile);
+// chấm điểm
+route.patch("/update-scorefile", ScorefileController.update_Scorefile);
 
 route.patch("/:id/delete-scorefile", ScorefileController.deleteOne_Scorefile);
 route.patch(

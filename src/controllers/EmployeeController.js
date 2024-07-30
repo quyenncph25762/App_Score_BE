@@ -170,7 +170,7 @@ class EmployeeController {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({ messager: "Xóa Role thành công" });
+        res.status(200).json({ messager: "Xóa tài khoản thành công" });
       }
     });
   }
@@ -181,7 +181,7 @@ class EmployeeController {
       if (err) {
         console.log("Error", err);
       } else {
-        res.status(200).json({ messager: "Xóa Role thành công" });
+        res.status(200).json({ messager: "Xóa tài khoản thành công" });
       }
     });
   }

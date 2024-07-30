@@ -164,7 +164,7 @@ class ScorefileController {
                               });
                             });
                             data.Criteria = Array.from(CriteriaMap.values());
-                            res.status(200).json(results);
+                            res.status(200).json(data);
                           }
                         }
                       );
@@ -368,53 +368,26 @@ class ScorefileController {
     });
   }
   // chấm điểm
-  update_Scorefile(req, res) {
-    const id = req.params.id;
-    let token = req.cookies[process.env.COOKIE];
-    let par = jwt.verify(token, process.env.SECRET);
-    let idEmployee = par._id;
+  async update_Scorefile(req, res) {
     const listScoreFileDetail = req.body.listScoreFileDetail;
-    ScorefileModle.deleteScorefile_Detail(id, (err, result) => {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        ScorefileModle.updateScorefile(id, req.body, async (err, results) => {
-          if (err) {
-            console.log("Error", err);
-          } else {
-            try {
-              if (listScoreFileDetail) {
-                for (const item of listScoreFileDetail) {
-                  const forms = {
-                    ScorefileId: id,
-                    CriteriaDetailId: item.CriteriaDetailId,
-                    EmployeeId: idEmployee,
-                    TypePercentValue: item.TypePercentValue,
-                    TypeTotalValue: item.TypeTotalValue,
-                    CurrentStatusValue: item.CurrentStatusValue,
-                  };
-                  await new Promise((resolve, reject) => {
-                    ScorefileModle.creatScoreFile_Detail(forms, (err, data) => {
-                      if (err) {
-                        reject(err);
-                      } else {
-                        resolve(data);
-                      }
-                    });
-                  });
-                }
-              }
-              res.status(200).json({
-                message: "cập nhật phiếu thành công",
-              });
-            } catch (error) {
-              console.log("Error", error);
-              res.status(500).json({ message: "Internal Server Error" });
-            }
-          }
-        });
+    try {
+      for (const item of listScoreFileDetail) {
+        const form = {
+          TypePercentValue: item.TypePercentValue,
+          TypeTotalValue: item.TypeTotalValue,
+          CurrentStatusValue: item.CurrentStatusValue,
+        };
+        await ScorefileModle.updateScorefile_Detail(
+          item.scorefileDetailId,
+          form
+        );
       }
-    });
+      res.status(200).json({
+        message: "Chấm điểm thành công",
+      });
+    } catch (error) {
+      console.log("Error", error);
+    }
   }
   deleteOne_Scorefile(req, res) {
     const id = req.params.id;

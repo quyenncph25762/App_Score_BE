@@ -130,8 +130,8 @@ const ScorefileModle = {
     const query = `UPDATE scorefile SET IsDeleted = 0 WHERE _id IN(?)`;
     connection.query(query, [id], callback);
   },
-  // scoreFile Detail
 
+  // scoreFile Detail
   getScorefileDetail_ByScoreFile_CriteriaDetail_Employee: (
     Scorefile,
     CriteriaDetail,
@@ -150,6 +150,25 @@ const ScorefileModle = {
       scorefile.EmployeeId,
     ];
     connection.query(query, values, callback);
+  },
+
+  updateScorefile_Detail: (id, scorefile_detail) => {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE scorefile_detail SET TypePercentValue =?, TypeTotalValue =?,CurrentStatusValue = ? WHERE _id = ?`;
+      const values = [
+        scorefile_detail.TypePercentValue,
+        scorefile_detail.TypeTotalValue,
+        scorefile_detail.CurrentStatusValue,
+        id,
+      ];
+      connection.query(query, values, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
   },
   deleteScorefile_Detail: (ScorefileId, callback) => {
     const query = "DELETE FROM scorefile_detail WHERE ScorefileId = ?";
