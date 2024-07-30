@@ -159,6 +159,11 @@ const Employee = {
     const query = "UPDATE employee SET IsDeleted = 1 WHERE _id IN(?)";
     connection.query(query, [id], callback);
   },
+  // restore
+  restoreEmloyee: (id, callback) => {
+    const query = "UPDATE employee SET IsDeleted = 0 WHERE _id IN(?)";
+    connection.query(query, [id], callback);
+  },
 
   // create field_employee
   createField_Employee: (field) => {

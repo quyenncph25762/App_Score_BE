@@ -164,6 +164,28 @@ class EmployeeController {
     }
   }
 
+  restoreOneEmployee(req, res) {
+    const id = req.params.id;
+    Employee.restoreEmloyee(id, (err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json({ messager: "Khôi phục tài khoản thành công" });
+      }
+    });
+  }
+  restoreAllSelected_Employee(req, res) {
+    const ids = req.body;
+    let idString = ids.map(String);
+    Employee.restoreEmloyee(idString, (err, results) => {
+      if (err) {
+        console.log("Error", err);
+      } else {
+        res.status(200).json({ messager: "Khôi tài khoản thành công" });
+      }
+    });
+  }
+
   deleteOneEmployee(req, res) {
     const id = req.params.id;
     Employee.deleteEmloyee(id, (err, results) => {

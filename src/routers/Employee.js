@@ -12,6 +12,15 @@ router.patch("/:id/update-employee", Employee.updateEmployee);
 
 //get one
 router.get("/:id/getOne-Employee", Employee.getOneById);
+
+//restore one
+router.patch("/restore-employee", Employee.restoreOneEmployee);
+//restore selected
+router.patch(
+  "/restore-all-selected-employee",
+  Employee.restoreAllSelected_Employee
+);
+
 //delete one
 router.patch("/delete-employee", Employee.deleteOneEmployee);
 //delete selected
