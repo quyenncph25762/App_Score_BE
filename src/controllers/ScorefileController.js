@@ -143,10 +143,7 @@ class ScorefileController {
                                 CriteriaMap.set(element.IdCriteria, {
                                   _id: element._id,
                                   Name: element.NameCriteria,
-                                  IsTypePercent: element.IsTypePercent,
-                                  IsTypeTotal: element.IsTypeTotal,
-                                  IsCurrentStatusType:
-                                    element.IsCurrentStatusType,
+
                                   listCriteria: [],
                                 });
                               }
@@ -156,6 +153,10 @@ class ScorefileController {
                               getCriteriatoMap.listCriteria.push({
                                 _id: element.IdScoreFile_Detail,
                                 Name: element.Name,
+                                IsTypePercent: element.IsTypePercent,
+                                IsTypeTotal: element.IsTypeTotal,
+                                IsCurrentStatusType:
+                                  element.IsCurrentStatusType,
                                 TypePercentValue: element.TypePercentValue,
                                 TypeTotalValue: element.TypeTotalValue,
                                 CurrentStatusValue: element.CurrentStatusValue,
@@ -167,12 +168,10 @@ class ScorefileController {
                         }
                       );
                     } else {
-                      res
-                        .status(500)
-                        .json({
-                          message:
-                            "Phiếu này không có lĩnh vực phù hợp với tài khoản",
-                        });
+                      res.status(500).json({
+                        message:
+                          "Phiếu này không có lĩnh vực phù hợp với tài khoản",
+                      });
                     }
                   }
                 }
