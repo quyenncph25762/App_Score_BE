@@ -23,6 +23,13 @@ route.get(
   "/:id/get-one-scorefile-employee-field",
   ScorefileController.getOne_Scorefile_ByEmployeeAndField
 );
+
+// update active
+route.patch(
+  "/:id/update-active-scorefile",
+  ScorefileController.update_ActiveScorefile
+);
+
 route.patch("/:id/update-scorefile", ScorefileController.update_Scorefile);
 
 route.patch("/:id/delete-scorefile", ScorefileController.deleteOne_Scorefile);

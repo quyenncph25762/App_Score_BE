@@ -72,19 +72,27 @@ const Scoretemp = {
     ];
     connection.query(query, values, callback);
   },
-  updateScoretemp: (id, temp, callback) => {
-    const query =
-      "UPDATE scoretemp SET Code = ?,Name = ?,YearId = ?,ObjectId = ?,IsActive = ?,Description = ? WHERE _id = ?";
-    const values = [
-      temp.Code,
-      temp.Name,
-      temp.YearId,
-      temp.ObjectId,
-      temp.IsActive,
-      temp.Description,
-      id,
-    ];
-    connection.query(query, values, callback);
+  updateScoretemp: (id, temp) => {
+    return new Promise((resolve, reject) => {
+      const query =
+        "UPDATE scoretemp SET Code = ?,Name = ?,YearId = ?,ObjectId = ?,IsActive = ?,Description = ? WHERE _id = ?";
+      const values = [
+        temp.Code,
+        temp.Name,
+        temp.YearId,
+        temp.ObjectId,
+        temp.IsActive,
+        temp.Description,
+        id,
+      ];
+      connection.query(query, values, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
   },
   deleteScoretemp: (id, callback) => {
     const query = "UPDATE scoretemp SET IsDeleted = 1 WHERE _id IN(?)";

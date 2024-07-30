@@ -127,7 +127,7 @@ const Employee = {
   },
   // update
   updateEmployee: (id, Employee) => {
-    try {
+    return new Promise((resolve, reject) => {
       const query =
         "UPDATE employee SET RoleId = ?,CityId = ?,DistrictId = ?,WardId = ?,ApartmentId = ?,Customer = ?,Avatar = ?,FullName = ?,Email = ?,Phone = ?,UserName = ?,CreatorUserId = ?,IsActive = ? WHERE _id = ?";
       const values = [
@@ -146,10 +146,13 @@ const Employee = {
         Employee.IsActive,
         id,
       ];
-      connection.query(query, values);
-    } catch (error) {
-      throw error;
-    }
+      connection.query(query, values, (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(results);
+      });
+    });
   },
   // xóa employee
   deleteEmloyee: (id, callback) => {
@@ -158,20 +161,30 @@ const Employee = {
   },
 
   // create field_employee
-  createField_Employee: (field, callback) => {
-    const query =
-      "INSERT INTO field_employee (EmployeeId,FieldId) VALUES (?,?)";
-    const values = [field.EmployeeId, field.FieldId];
-    connection.query(query, values, callback);
+  createField_Employee: (field) => {
+    return new Promise((resolve, reject) => {
+      const query =
+        "INSERT INTO field_employee (EmployeeId,FieldId) VALUES (?,?)";
+      const values = [field.EmployeeId, field.FieldId];
+      connection.query(query, values, (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(results);
+      });
+    });
   },
   // xóa field
   deleteField_Employee: (id) => {
-    try {
+    return new Promise((resolve, reject) => {
       const query = "DELETE FROM field_employee WHERE EmployeeId = ? ";
-      connection.query(query, id);
-    } catch (error) {
-      throw error;
-    }
+      connection.query(query, id, (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(results);
+      });
+    });
   },
   // lấy field_employee theo employeeId
   getAll_FieldEmployee: (EmployeeId, callback) => {

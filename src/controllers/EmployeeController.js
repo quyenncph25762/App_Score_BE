@@ -143,29 +143,17 @@ class EmployeeController {
     const FieldIds = req.body.Fields;
     try {
       await Employee.deleteField_Employee(EmployeeId);
-
       const updateData = { ...req.body, EmployeeId };
-      
       await Employee.updateEmployee(EmployeeId, updateData);
 
       // Process FieldIds if it exists
       if (FieldIds && FieldIds.length > 0) {
-        const fieldPromises = FieldIds.map((id) => {
+        FieldIds.map(async (id) => {
           const forms = { EmployeeId, FieldId: id };
-          return new Promise((resolve, reject) => {
-            Employee.createField_Employee(forms, (err, data) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(data);
-              }
-            });
-          });
+          await Employee.createField_Employee(forms);
         });
-
-        await Promise.all(fieldPromises);
       }
-      res.status(200).json({
+      return res.status(200).json({
         message: "Chỉnh sửa tài khoản thành công",
       });
     } catch (err) {

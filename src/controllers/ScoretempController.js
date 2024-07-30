@@ -1,5 +1,6 @@
 import Scoretemp from "../models/Scoretemp";
 import CriteriaModle from "../models/Criteria";
+
 class ScoretempController {
   getAllScoretemp(req, res) {
     Scoretemp.getAllScoretemp((err, results) => {
@@ -84,15 +85,7 @@ class ScoretempController {
               Name: criteria.Name,
               FieldId: criteria.FieldId,
             };
-            const data = await new Promise((resolve, reject) => {
-              CriteriaModle.createCriteria(form, (err, data) => {
-                if (err) {
-                  reject(err);
-                } else {
-                  resolve(data);
-                }
-              });
-            });
+            const data = await CriteriaModle.createCriteria(form);
             const CriteriaId = data.insertId;
             if (criteria.listCriteria) {
               for (const detail of criteria.listCriteria) {
@@ -105,18 +98,7 @@ class ScoretempController {
                   IsTypeTotal: detail.IsTypeTotal,
                   IsCurrentStatusType: detail.IsCurrentStatusType,
                 };
-                await new Promise((resolve, reject) => {
-                  CriteriaModle.createDetailCriteria(
-                    formDetail,
-                    (err, results) => {
-                      if (err) {
-                        reject(err);
-                      } else {
-                        resolve(results);
-                      }
-                    }
-                  );
-                });
+                await CriteriaModle.createDetailCriteria(formDetail);
               }
             }
           }
@@ -129,74 +111,101 @@ class ScoretempController {
     });
   }
 
-  updateScoretemp(req, res) {
+  async updateScoretemp(req, res) {
     const id = req.params.id;
     const Criteria = req.body.Criteria;
-    CriteriaModle.deleteCriteria(id, (err, results) => {
-      if (err) {
-        console.log("Error", err);
-        res.status(500).json({ message: "Internal Server Error" });
-        return;
-      }
-      Scoretemp.updateScoretemp(id, req.body, async (err, results) => {
-        if (err) {
-          console.log("Error", err);
-          res.status(500).json({ message: "Internal Server Error" });
-          return;
+    try {
+      await Scoretemp.updateScoretemp(id, req.body);
+
+      // Remove criteria not present in the client data
+      const currentCriteria = await CriteriaModle.getAll_ByScoretemp(id);
+      const currentCriteriaIds = new Set(
+        currentCriteria.map((item) => item._id)
+      );
+      const clientCriteriaIds = new Set(Criteria.map((item) => item._id));
+
+      for (const criteriaId of currentCriteriaIds) {
+        if (!clientCriteriaIds.has(criteriaId)) {
+          await CriteriaModle.deleteCriteria(criteriaId);
         }
-        try {
-          if (Criteria) {
-            for (const criteria of Criteria) {
-              const form = {
-                ScoreTempId: id,
-                Name: criteria.Name,
-                FieldId: criteria.FieldId,
-              };
-              const data = await new Promise((resolve, reject) => {
-                CriteriaModle.createCriteria(form, (err, data) => {
-                  if (err) {
-                    reject(err);
-                  } else {
-                    resolve(data);
-                  }
-                });
-              });
-              const CriteriaId = data.insertId;
-              if (criteria.listCriteria) {
-                for (const detail of criteria.listCriteria) {
-                  const formDetail = {
-                    Name: detail.Name,
-                    CriteriaId: CriteriaId,
-                    Score: detail.Score,
-                    Target: detail.Target,
-                    IsTypePercent: detail.IsTypePercent,
-                    IsTypeTotal: detail.IsTypeTotal,
-                    IsCurrentStatusType: detail.IsCurrentStatusType,
-                  };
-                  await new Promise((resolve, reject) => {
-                    CriteriaModle.createDetailCriteria(
-                      formDetail,
-                      (err, results) => {
-                        if (err) {
-                          reject(err);
-                        } else {
-                          resolve(results);
-                        }
-                      }
-                    );
-                  });
-                }
-              }
+      }
+
+      // Process the criteria from the client
+      for (const criteria of Criteria) {
+        const form = {
+          ScoreTempId: id,
+          Name: criteria.Name,
+          FieldId: criteria.FieldId,
+        };
+
+        if (criteria._id) {
+          await CriteriaModle.updateCriteria(criteria._id, form);
+
+          // Handle criteria details
+          const currentCriteriaDetail =
+            await CriteriaModle.getCriteriaDetail_ByCriteriaId(criteria._id);
+          const currentCriteriaDetailIds = new Set(
+            currentCriteriaDetail.map((item) => item._id)
+          );
+          const clientCriteriaDetailIds = new Set(
+            criteria.listCriteria.map((item) => item._id)
+          );
+
+          // Remove details not present in the client data
+          for (const detailId of currentCriteriaDetailIds) {
+            if (!clientCriteriaDetailIds.has(detailId)) {
+              await CriteriaModle.deleteCriteriaDetail(detailId);
             }
           }
-          res.status(200).json({ message: "Thêm phiếu thành công" });
-        } catch (error) {
-          console.log("Error", error);
-          res.status(500).json({ message: "Internal Server Error" });
+
+          // Update or create details
+          for (const detail of criteria.listCriteria || []) {
+            const formDetail = {
+              Name: detail.Name,
+              CriteriaId: criteria._id,
+              Score: detail.Score,
+              Target: detail.Target,
+              IsTypePercent: detail.IsTypePercent,
+              IsTypeTotal: detail.IsTypeTotal,
+              IsCurrentStatusType: detail.IsCurrentStatusType,
+            };
+
+            if (detail._id) {
+              await CriteriaModle.updateCriteriaDetail(detail._id, formDetail);
+            } else {
+              await CriteriaModle.createDetailCriteria(formDetail);
+            }
+          }
+        } else {
+          // Create new criteria
+          const { insertId: CriteriaId } = await CriteriaModle.createCriteria(
+            form
+          );
+          console.log(criteria.listCriteria);
+          if (criteria.listCriteria) {
+            for (const detail of criteria.listCriteria) {
+              const formDetail = {
+                Name: detail.Name,
+                CriteriaId: CriteriaId,
+                Score: detail.Score,
+                Target: detail.Target,
+                IsTypePercent: detail.IsTypePercent,
+                IsTypeTotal: detail.IsTypeTotal,
+                IsCurrentStatusType: detail.IsCurrentStatusType,
+              };
+              await CriteriaModle.createDetailCriteria(formDetail);
+            }
+          }
         }
-      });
-    });
+      }
+
+      res.status(200).json({ message: "Cập nhật phiếu thành công" });
+    } catch (error) {
+      console.log("Error", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
+
   deleteAll_Selected(req, res) {
     const ids = req.body;
     let idString = ids.map(String);
