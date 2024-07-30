@@ -108,10 +108,18 @@ const ScorefileModle = {
       "UPDATE scorefile SET IsActive = 1 WHERE _id = ? AND EmployeeId = ?";
     connection.query(query, [id, EmployeeId], callback);
   },
-  updateScorefile: (id, scorefile, callback) => {
-    const query = `UPDATE scorefile SET Score  = ?,Status = ?,IsActive  = ? WHERE _id IN(?)`;
-    const values = [scorefile.Score, scorefile.Status, scorefile.IsActive, id];
-    connection.query(query, values, callback);
+  updateScorefile: (id, scorefile) => {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE scorefile SET Status = ? WHERE _id = ?`;
+      const values = [scorefile.Status, id];
+      connection.query(query, values, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
   },
   deleteScorefile: (id, callback) => {
     const query = `UPDATE scorefile SET IsDeleted = 1 WHERE _id IN(?)`;

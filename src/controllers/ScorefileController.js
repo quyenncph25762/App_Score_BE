@@ -369,8 +369,12 @@ class ScorefileController {
   }
   // chấm điểm
   async update_Scorefile(req, res) {
+    const scorefileId = req.body.scoreFileId;
     const listScoreFileDetail = req.body.listScoreFileDetail;
     try {
+      await ScorefileModle.updateScorefile(scorefileId, {
+        Status: req.body.Status,
+      });
       for (const item of listScoreFileDetail) {
         const form = {
           TypePercentValue: item.TypePercentValue,
