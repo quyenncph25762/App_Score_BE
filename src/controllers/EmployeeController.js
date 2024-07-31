@@ -83,6 +83,10 @@ class EmployeeController {
       }
     });
   }
+  async trashEmployee(req, res) {
+    const data = await Employee.trashEmployee();
+    res.status(200).json(data);
+  }
   createEmployee(req, res) {
     const Email = req.body.Email;
     const UserName = req.body.UserName;

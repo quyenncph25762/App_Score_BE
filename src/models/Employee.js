@@ -66,6 +66,29 @@ const Employee = {
       "SELECT * FROM employee WHERE IsDeleted = 0 AND Email = ? AND UserName = ?";
     connection.query(query, [Email, UserName], callback);
   },
+  // thùng rác
+  trashEmployee: () => {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT employee.*,
+      city.Name AS NameCity,
+      district.Name AS NameDistrict,
+      ward.Name AS NameWard,
+      role.NameRole AS RoleName
+      FROM employee
+      JOIN city ON employee.cityId = city._id
+      JOIN district ON employee.DistrictId = district._id
+      JOIN ward ON employee.WardId = ward._id
+      JOIN role ON employee.RoleId = role._id
+      WHERE employee.IsDeleted = 1`;
+      connection.query(query, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  },
   // lấy theo id
   getOneEmployeeById: (id, callback) => {
     const query = `

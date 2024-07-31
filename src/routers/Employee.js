@@ -4,6 +4,8 @@ const router = express.Router();
 
 router.get("/getAllEmployee", Employee.getAll);
 
+router.get("/trash-employee", Employee.trashEmployee);
+
 router.get("/:id/get-all-field-employee", Employee.getAll_FieldEmployee);
 
 router.post("/create-employee", Employee.createEmployee);

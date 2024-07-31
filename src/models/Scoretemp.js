@@ -98,7 +98,6 @@ const Scoretemp = {
     const query = "UPDATE scoretemp SET IsDeleted = 1 WHERE _id IN(?)";
     connection.query(query, [id], callback);
   },
-
   restoreScoretemp: (id, callback) => {
     const query = "UPDATE scoretemp SET IsDeleted = 0 WHERE _id IN(?)";
     connection.query(query, [id], callback);

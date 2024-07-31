@@ -138,7 +138,6 @@ const ScorefileModle = {
     const query = `UPDATE scorefile SET IsDeleted = 0 WHERE _id IN(?)`;
     connection.query(query, [id], callback);
   },
-
   // scoreFile Detail
   getScorefileDetail_ByScoreFile_CriteriaDetail_Employee: (
     Scorefile,
