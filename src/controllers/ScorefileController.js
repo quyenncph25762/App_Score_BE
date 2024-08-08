@@ -149,7 +149,7 @@ class ScorefileController {
       console.log("Error", error);
     }
   }
-  // Tạo phiếu cho xã
+  // Tạo phiếu cho xã và admin 
   async create_Scorefile(req, res) {
     const { EmployeeId, YearId, ObjectId } = req.body;
     // danh sách tạo scorefile
@@ -268,7 +268,7 @@ class ScorefileController {
       console.log("Error", error);
     }
   }
-  // tạo phiếu cho huyện || tỉnh
+  // xã tạo phiếu cho huyện || tỉnh
   async create_scorefile_forAdminDistrict(req, res) {
     let token = req.cookies[process.env.COOKIE];
     let par = jwt.verify(token, process.env.SECRET);

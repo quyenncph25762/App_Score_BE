@@ -74,9 +74,14 @@ class EmployeeController {
   }
   // lấy các employee để phát phiếu chấm
   async getEmployeeToCreateScorefile(req, res) {
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại
+    const pageSize = 12; // Kích thước trang
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = page * pageSize;
     let token = req.cookies[process.env.COOKIE];
     let par = jwt.verify(token, process.env.SECRET);
     let idEmployee = par._id;
+
     try {
       var ListEmployee;
       const OneEmployee = await EmployeeModle.getOneEmployeeById(idEmployee);
@@ -98,8 +103,25 @@ class EmployeeController {
       } else if (RoleId == 1 && CityId == null) {
         ListEmployee = await EmployeeModle.getAdminCity_By_Manager();
       }
-      res.status(200).json(ListEmployee);
-    } catch (error) { 
+      const totalPages = Math.ceil(ListEmployee.length / pageSize);
+      const pages = Array.from({ length: totalPages }, (_, index) => {
+        return {
+          number: index + 1,
+          active: index + 1 === page,
+          isDots: index + 1 > 5,
+        };
+      });
+      const paginatedData = ListEmployee.slice(startIndex, endIndex);
+      const views = {
+        results: paginatedData,
+        pagination: {
+          prev: page > 1 ? page - 1 : null,
+          next: endIndex < ListEmployee.length ? page + 1 : null,
+          pages: pages,
+        },
+      };
+      res.status(200).json(views);
+    } catch (error) {
       console.log("Error", error);
     }
   }
