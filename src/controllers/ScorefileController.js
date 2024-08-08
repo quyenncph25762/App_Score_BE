@@ -4,6 +4,7 @@ import ScoretempModle from "../models/Scoretemp";
 import CriteriaModle from "../models/Criteria";
 import generateRandomString from "../middlewares/generate";
 import jwt from "jsonwebtoken";
+import Employee from "../models/Employee";
 class ScorefileController {
   // lấy tất cả phiếu
   async getScorefile_ByEmployeeId(req, res) {
@@ -120,7 +121,6 @@ class ScorefileController {
             CriteriaMap.set(element.IdCriteria, {
               _id: element._id,
               Name: element.NameCriteria,
-
               listCriteria: [],
             });
           }
@@ -148,7 +148,7 @@ class ScorefileController {
       console.log("Error", error);
     }
   }
-  // Tạo phiếu cho xã và admin 
+  // Tạo phiếu cho xã và admin
   async create_Scorefile(req, res) {
     const { EmployeeId, YearId, ObjectId } = req.body;
     // danh sách tạo scorefile
@@ -369,10 +369,16 @@ class ScorefileController {
   async update_Scorefile(req, res) {
     const scorefileId = req.body.scoreFileId;
     const listScoreFileDetail = req.body.listScoreFileDetail;
+    let token = req.cookies[process.env.COOKIE];
+    let par = jwt.verify(token, process.env.SECRET);
+    let idEmployee = par._id;
     try {
-      await ScorefileModle.updateScorefile(scorefileId, {
-        Status: req.body.Status,
-      });
+      const Employee = await EmployeeModle.getOneEmployeeById(idEmployee);
+      if (Employee[0].RoleId == 1) {
+        await ScorefileModle.updateScorefile(scorefileId, {
+          Status: req.body.Status,
+        });
+      }
       for (const item of listScoreFileDetail) {
         const form = {
           TypePercentValue: item.TypePercentValue,
