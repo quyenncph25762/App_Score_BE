@@ -319,7 +319,7 @@ class ScorefileController {
             EmployeeId: IdAdmin,
             ScoreTempId: ScoreTempId,
             CreatorId: id,
-            ScorefileId: IdScorefile,
+            ScorefileId_Sent: IdScorefile,
             YearId: InfoScoreTemp[0]?.YearId,
             Code: generateRandomString(6),
           };

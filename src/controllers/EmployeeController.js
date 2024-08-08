@@ -99,7 +99,7 @@ class EmployeeController {
         ListEmployee = await EmployeeModle.getAdminCity_By_Manager();
       }
       res.status(200).json(ListEmployee);
-    } catch (error) {
+    } catch (error) { 
       console.log("Error", error);
     }
   }
