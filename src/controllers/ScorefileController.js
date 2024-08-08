@@ -18,6 +18,7 @@ class ScorefileController {
       const CityId = InfoEmployee[0]?.CityId;
       const DistrictId = InfoEmployee[0]?.DistrictId;
       const ApartmentId = InfoEmployee[0].ApartmentId;
+      const RoleId = InfoEmployee[0].RoleId;
       if (ApartmentId == 1) {
         const EmployeeAdmin = await EmployeeModle.getOne_Admin_City(
           CityId,
@@ -35,13 +36,17 @@ class ScorefileController {
         IdAdmin = id;
       }
 
-      ScorefileModle.getScorefile_ByEmployee(IdAdmin, (err, results) => {
-        if (err) {
-          console.log("Error", err);
-        } else {
-          res.status(200).json(results);
+      ScorefileModle.getScorefile_ByEmployee(
+        IdAdmin,
+        RoleId,
+        (err, results) => {
+          if (err) {
+            console.log("Error", err);
+          } else {
+            res.status(200).json(results);
+          }
         }
-      });
+      );
     } catch (error) {
       console.log("Error", error);
     }
@@ -349,7 +354,6 @@ class ScorefileController {
     let par = jwt.verify(token, process.env.SECRET);
     let idEmployee = par._id;
     const idScorefile = req.params.id;
-
     // từ scorefile -> Idscorefile đã gửi->đổi status đã nhận
     try {
       const results = await ScorefileModle.getScorefile_ById(idScorefile);

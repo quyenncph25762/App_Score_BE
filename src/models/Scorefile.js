@@ -1,7 +1,7 @@
 import connection from "../config/db";
 const ScorefileModle = {
   // lấy tất cả scorefile
-  getScorefile_ByEmployee: (EmployeeId, callback) => {
+  getScorefile_ByEmployee: (EmployeeId, RoleId, callback) => {
     const query = `
     SELECT 
     s._id AS IdScoretemp,
@@ -13,6 +13,7 @@ const ScorefileModle = {
     sf.Score AS Score,
     sf.Status AS Status,
     sf._id AS _id,
+    sf.IsSend AS IsSend,
     city.Name AS NameCity,
     district.Name AS NameDistrict,
     ward.Name AS NameWard
@@ -23,8 +24,9 @@ const ScorefileModle = {
     LEFT JOIN ward ON employee.WardId = ward._id
     JOIN scoretemp s ON sf.ScoreTempId = s._id
     JOIN year y ON sf.YearId = y._id
-    WHERE sf.IsDeleted = 0 AND sf.EmployeeId = ?
+    WHERE sf.IsDeleted = 0 AND sf.EmployeeId = ?  AND (${RoleId} = 1 OR sf.IsActive = 1)
     `;
+
     connection.query(query, [EmployeeId], callback);
   },
   // lấy scoregile đã duyệt và chấm xong
@@ -54,7 +56,6 @@ const ScorefileModle = {
       sd.CurrentStatusValue = CurrentStatusValue
       FROM scorefile s 
       JOIN scorefile_detail sd ON s._id = sd.ScorefileId
-      JOIN criteria c ON s.C
       WHERE s._id = ? AND s.IsDeleted = 0`;
       connection.query(query, id, (err, results) => {
         if (err) {
