@@ -18,6 +18,8 @@ class EmployeeController {
           });
           res.status(200).json({
             name: data.FullName,
+            customer: data.Customer,
+            roleId: data.RoleId,
             avatar: data.Avatar,
             token: token,
           });
