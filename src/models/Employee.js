@@ -151,8 +151,8 @@ const Employee = {
       role.NameRole AS RoleName
       FROM employee
       JOIN city ON employee.cityId = city._id
-      JOIN district ON employee.DistrictId = district._id
-      JOIN ward ON employee.WardId = ward._id
+      LEFT JOIN district ON employee.DistrictId = district._id
+      LEFT JOIN ward ON employee.WardId = ward._id
       JOIN role ON employee.RoleId = role._id
       WHERE employee.IsDeleted = 1`;
       connection.query(query, (err, results) => {
