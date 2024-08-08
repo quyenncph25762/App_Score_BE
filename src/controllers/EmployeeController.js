@@ -86,15 +86,17 @@ class EmployeeController {
       const ApartmentId = OneEmployee[0]?.ApartmentId;
       // nếu là Admin huyện
       if (RoleId == 1 && ApartmentId == 2) {
-        ListEmployee = await EmployeeModle.getWardAndDistrict_By_AdminDistrict(
+        ListEmployee = await EmployeeModle.getAdminWard_By_AdminDistrict(
           DistrictId
         );
       }
       // nếu là admin tỉnh
       else if (RoleId == 1 && ApartmentId == 1) {
-        ListEmployee = await EmployeeModle.getCityBy_AdminCity(CityId);
+        ListEmployee = await EmployeeModle.getAdminDistrict_By_AdminCity(
+          CityId
+        );
       } else if (RoleId == 1 && CityId == null) {
-        ListEmployee = await EmployeeModle.getAllEmployee("");
+        ListEmployee = await EmployeeModle.getAdminCity_By_Manager();
       }
       res.status(200).json(ListEmployee);
     } catch (error) {

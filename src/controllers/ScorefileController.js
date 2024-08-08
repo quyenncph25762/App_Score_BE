@@ -4,8 +4,6 @@ import ScoretempModle from "../models/Scoretemp";
 import CriteriaModle from "../models/Criteria";
 import generateRandomString from "../middlewares/generate";
 import jwt from "jsonwebtoken";
-import { message } from "antd";
-
 class ScorefileController {
   // lấy tất cả phiếu
   async getScorefile_ByEmployeeId(req, res) {

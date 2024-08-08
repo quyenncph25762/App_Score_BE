@@ -70,8 +70,8 @@ const Employee = {
       });
     });
   },
-  // lấy những taikhoan xã và tài khoản con của huyện theo admin huyện
-  getWardAndDistrict_By_AdminDistrict: (DistrictId) => {
+  // lấy những taikhoan admin xã theo admin huyện
+  getAdminWard_By_AdminDistrict: (DistrictId) => {
     return new Promise((resolve, reject) => {
       const query = `SELECT employee.*,
     city.Name AS NameCity,
@@ -83,7 +83,7 @@ const Employee = {
     LEFT JOIN district ON employee.DistrictId = district._id
     LEFT JOIN ward ON employee.WardId = ward._id
     JOIN role ON employee.RoleId = role._id
-    WHERE employee.IsDeleted = 0 AND employee.DistrictId = ? AND NOT (employee.RoleId = 1 AND employee.ApartmentId = 2)
+    WHERE employee.IsDeleted = 0 AND employee.DistrictId = ? AND employee.ApartmentId = 3 AND employee.RoleId = 1
      `;
       connection.query(query, DistrictId, (err, results) => {
         if (err) {
@@ -94,8 +94,8 @@ const Employee = {
       });
     });
   },
-  // lấy những tài khoản con của tỉnh theo admin tình
-  getCityBy_AdminCity: (CityId) => {
+  // lấy những tài khoản admin huyện  theo admin tỉnh
+  getAdminDistrict_By_AdminCity: (CityId) => {
     return new Promise((resolve, reject) => {
       const query = `SELECT employee.*,
     city.Name AS NameCity,
@@ -107,7 +107,7 @@ const Employee = {
     LEFT JOIN district ON employee.DistrictId = district._id
     LEFT JOIN ward ON employee.WardId = ward._id
     JOIN role ON employee.RoleId = role._id
-    WHERE employee.IsDeleted = 0 AND employee.CityId = ? AND NOT (employee.RoleId = 1 AND employee.ApartmentId = 1)`;
+    WHERE employee.IsDeleted = 0 AND employee.CityId = ? AND employee.ApartmentId = 2 AND employee.RoleId = 1`;
       connection.query(query, CityId, (err, results) => {
         if (err) {
           reject(err);
@@ -117,6 +117,30 @@ const Employee = {
       });
     });
   },
+  // lấy những tài khoản admin huyện  theo admin tỉnh
+  getAdminCity_By_Manager: () => {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT employee.*,
+    city.Name AS NameCity,
+    district.Name AS NameDistrict,
+    ward.Name AS NameWard,
+    role.NameRole AS RoleName
+    FROM employee
+    JOIN city ON employee.cityId = city._id
+    LEFT JOIN district ON employee.DistrictId = district._id
+    LEFT JOIN ward ON employee.WardId = ward._id
+    JOIN role ON employee.RoleId = role._id
+    WHERE employee.IsDeleted = 0 AND employee.RoleId = 1 AND employee.ApartmentId = 1`;
+      connection.query(query, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  },
+
   // thùng rác
   trashEmployee: () => {
     return new Promise((resolve, reject) => {
