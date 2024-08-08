@@ -8,6 +8,12 @@ router.get("/trash-employee", Employee.trashEmployee);
 
 router.get("/:id/get-all-field-employee", Employee.getAll_FieldEmployee);
 
+//lấy các employee để phát phiếu chấm
+router.get(
+  "/get-employee-to-create-scorefile",
+  Employee.getEmployeeToCreateScorefile
+);
+
 router.post("/create-employee", Employee.createEmployee);
 
 router.patch("/:id/update-employee", Employee.updateEmployee);

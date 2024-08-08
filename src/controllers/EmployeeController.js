@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
-import Employee from "../models/Employee";
+import EmployeeModle from "../models/Employee";
 
 class EmployeeController {
   login(req, res) {
     const UserName = req.body.UserName;
     const PassWord = req.body.Password;
-    Employee.getOneEmloyee(UserName, PassWord, (err, results) => {
+    EmployeeModle.getOneEmloyee(UserName, PassWord, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -29,132 +29,137 @@ class EmployeeController {
       }
     });
   }
-  getOneById(req, res) {
+  async getOneById(req, res) {
     const id = req.params.id;
-    Employee.getOneEmployeeById(id, (err, results) => {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        const data = results[0];
-        res.status(200).json(data);
-      }
-    });
+    try {
+      const results = await EmployeeModle.getOneEmployeeById(id);
+      const data = results[0];
+      res.status(200).json(data);
+    } catch (error) {
+      console.log("Error", error);
+    }
   }
-  // lấy tài khoản theo tình
-  getAll(req, res) {
+  // lấy tất cả các employee
+  async getAll(req, res) {
     const searchName = req.query.searchName || "";
     const page = parseInt(req.query.page) || 1; // Trang hiện tại
-    const pageSize = 10; // Kích thước trang
+    const pageSize = 12; // Kích thước trang
     const startIndex = (page - 1) * pageSize;
     const endIndex = page * pageSize;
-    Employee.getAllEmployee(searchName, (err, data) => {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        const totalPages = Math.ceil(data.length / pageSize);
-        const pages = Array.from({ length: totalPages }, (_, index) => {
-          return {
-            number: index + 1,
-            active: index + 1 === page,
-            isDots: index + 1 > 5,
-          };
-        });
-        const paginatedData = data.slice(startIndex, endIndex);
-        const views = {
-          results: paginatedData,
-          pagination: {
-            prev: page > 1 ? page - 1 : null,
-            next: endIndex < data.length ? page + 1 : null,
-            pages: pages,
-          },
+    try {
+      const data = await EmployeeModle.getAllEmployee(searchName);
+      const totalPages = Math.ceil(data.length / pageSize);
+      const pages = Array.from({ length: totalPages }, (_, index) => {
+        return {
+          number: index + 1,
+          active: index + 1 === page,
+          isDots: index + 1 > 5,
         };
-        res.status(200).json(views);
-      }
-    });
+      });
+      const paginatedData = data.slice(startIndex, endIndex);
+      const views = {
+        results: paginatedData,
+        pagination: {
+          prev: page > 1 ? page - 1 : null,
+          next: endIndex < data.length ? page + 1 : null,
+          pages: pages,
+        },
+      };
+      res.status(200).json(views);
+    } catch (error) {
+      console.log("Error", error);
+    }
   }
-  getAll_FieldEmployee(req, res) {
-    const id = req.params.id;
-
-    Employee.getAll_FieldEmployee(id, (err, results) => {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        res.status(200).json(results);
+  // lấy các employee để phát phiếu chấm
+  async getEmployeeToCreateScorefile(req, res) {
+    let token = req.cookies[process.env.COOKIE];
+    let par = jwt.verify(token, process.env.SECRET);
+    let idEmployee = par._id;
+    try {
+      var ListEmployee;
+      const OneEmployee = await EmployeeModle.getOneEmployeeById(idEmployee);
+      const RoleId = OneEmployee[0]?.RoleId;
+      const CityId = OneEmployee[0]?.CityId;
+      const DistrictId = OneEmployee[0]?.DistrictId;
+      const ApartmentId = OneEmployee[0]?.ApartmentId;
+      // nếu là Admin huyện
+      if (RoleId == 1 && ApartmentId == 2) {
+        ListEmployee = await EmployeeModle.getWardAndDistrict_By_AdminDistrict(
+          DistrictId
+        );
       }
-    });
+      // nếu là admin tỉnh
+      else if (RoleId == 1 && ApartmentId == 1) {
+        ListEmployee = await EmployeeModle.getCityBy_AdminCity(CityId);
+      } else if (RoleId == 1 && CityId == null) {
+        ListEmployee = await EmployeeModle.getAllEmployee("");
+      }
+      res.status(200).json(ListEmployee);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }
+  async getAll_FieldEmployee(req, res) {
+    const id = req.params.id;
+    try {
+      const results = await EmployeeModle.getAll_FieldEmployee(id);
+      res.status(200).json(results);
+    } catch (error) {
+      console.log("Error", error);
+    }
   }
   async trashEmployee(req, res) {
-    const data = await Employee.trashEmployee();
-    res.status(200).json(data);
+    try {
+      const data = await EmployeeModle.trashEmployee();
+      res.status(200).json(data);
+    } catch (error) {
+      console.log("Error", error);
+    }
   }
-  createEmployee(req, res) {
+  async createEmployee(req, res) {
     const Email = req.body.Email;
     const UserName = req.body.UserName;
     const FieldIds = req.body.Fields;
-
-    Employee.getEmployeeBy_EmailAndUserName(Email, UserName, (err, data) => {
-      if (err) {
-        console.log("Error", err);
+    try {
+      const data = await EmployeeModle.getEmployeeBy_EmailAndUserName(
+        Email,
+        UserName
+      );
+      if (data.length > 0) {
+        res.status(400).json({
+          messager: "Email hoặc tên đăng nhập đã tồn tại",
+        });
       } else {
-        if (data.length > 0) {
-          res.status(400).json({
-            messager: "Email hoặc tên đăng nhập đã tồn tại",
-          });
-        } else {
-          Employee.createEmployee(req.body, (err, results) => {
-            if (err) {
-              console.log("Error", err);
-            } else {
-              const EmployeeId = results.insertId;
-              if (FieldIds) {
-                const Fields = FieldIds.map((id) => {
-                  const forms = {
-                    EmployeeId: EmployeeId,
-                    FieldId: id,
-                  };
-                  return new Promise((resolve, reject) => {
-                    Employee.createField_Employee(forms, (err, data) => {
-                      if (err) {
-                        reject(err);
-                      } else {
-                        resolve(data);
-                      }
-                    });
-                  });
-                });
-                Promise.all(Fields)
-                  .then(() => {
-                    res.status(200).json({
-                      messager: "Thêm tài khoản thành công",
-                    });
-                  })
-                  .catch((err) => {
-                    console.log("Error", err);
-                  });
-              } else {
-                res.status(200).json({
-                  messager: "Thêm tài khoản thành công",
-                });
-              }
-            }
-          });
+        const results = await EmployeeModle.createEmployee(req.body);
+        const EmployeeId = results.insertId;
+        if (FieldIds) {
+          for (const id of FieldIds) {
+            const forms = {
+              EmployeeId: EmployeeId,
+              FieldId: id,
+            };
+            await EmployeeModle.createField_Employee(forms);
+          }
         }
+        res.status(200).json({ message: "Tạo tài khoản thành công" });
       }
-    });
+    } catch (error) {
+      console.log("Error", error);
+    }
   }
   async updateEmployee(req, res) {
     const EmployeeId = req.params.id;
     const FieldIds = req.body.Fields;
     try {
-      await Employee.deleteField_Employee(EmployeeId);
+      await EmployeeModle.deleteField_Employee(EmployeeId);
       const updateData = { ...req.body, EmployeeId };
-      await Employee.updateEmployee(EmployeeId, updateData);
+      await EmployeeModle.updateEmployee(EmployeeId, updateData);
 
       // Process FieldIds if it exists
       if (FieldIds && FieldIds.length > 0) {
         FieldIds.map(async (id) => {
           const forms = { EmployeeId, FieldId: id };
-          await Employee.createField_Employee(forms);
+          await EmployeeModle.createField_Employee(forms);
         });
       }
       return res.status(200).json({
@@ -162,15 +167,11 @@ class EmployeeController {
       });
     } catch (err) {
       console.log("Error", err);
-      res.status(500).json({
-        message: "Lỗi chỉnh sửa tài khoản",
-      });
     }
   }
-
   restoreOneEmployee(req, res) {
     const id = req.params.id;
-    Employee.restoreEmloyee(id, (err, results) => {
+    EmployeeModle.restoreEmloyee(id, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -181,7 +182,7 @@ class EmployeeController {
   restoreAllSelected_Employee(req, res) {
     const ids = req.body;
     let idString = ids.map(String);
-    Employee.restoreEmloyee(idString, (err, results) => {
+    EmployeeModle.restoreEmloyee(idString, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -189,10 +190,9 @@ class EmployeeController {
       }
     });
   }
-
   deleteOneEmployee(req, res) {
     const id = req.params.id;
-    Employee.deleteEmloyee(id, (err, results) => {
+    EmployeeModle.deleteEmloyee(id, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -203,7 +203,7 @@ class EmployeeController {
   deleteAllSelected_Employee(req, res) {
     const ids = req.body;
     let idString = ids.map(String);
-    Employee.deleteEmloyee(idString, (err, results) => {
+    EmployeeModle.deleteEmloyee(idString, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {

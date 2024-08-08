@@ -4,19 +4,8 @@ class Checkout {
   checkAdmin(req, res, next) {
     let token = req.cookies[process.env.COOKIE];
     let par = jwt.verify(token, process.env.SECRET);
-    Employee.getOneEmployeeById(par._id, (err, results) => {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        const data = results[0];
-        if (data.RoleId === 1) {
-          next();
-        } else {
-            
-          res.redirect("back");
-        }
-      }
-    });
+    console.log(par);
+    next();
   }
 }
 export default new Checkout();

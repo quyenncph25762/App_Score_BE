@@ -1,9 +1,9 @@
-import Scoretemp from "../models/Scoretemp";
+import ScoretempModle from "../models/Scoretemp";
 import CriteriaModle from "../models/Criteria";
 
 class ScoretempController {
   getAllScoretemp(req, res) {
-    Scoretemp.getAllScoretemp((err, results) => {
+    ScoretempModle.getAllScoretemp((err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -14,7 +14,7 @@ class ScoretempController {
   //
   getOneScoretemp(req, res) {
     const id = parseInt(req.params.id);
-    Scoretemp.getOneScoretemp(id, (err, results) => {
+    ScoretempModle.getOneScoretemp(id, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -59,7 +59,7 @@ class ScoretempController {
 
   // lấy thùng rác
   getAll_TrashScoretemp(req, res) {
-    Scoretemp.getAll_TrashScoretemp((err, results) => {
+    ScoretempModle.getAll_TrashScoretemp((err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -70,7 +70,7 @@ class ScoretempController {
   // create
   createScoretemp(req, res) {
     const Criteria = req.body.Criteria;
-    Scoretemp.createScoretemp(req.body, async (err, results) => {
+    ScoretempModle.createScoretemp(req.body, async (err, results) => {
       if (err) {
         console.log("Error", err);
         res.status(500).json({ message: "Internal Server Error" });
@@ -115,7 +115,7 @@ class ScoretempController {
     const id = req.params.id;
     const Criteria = req.body.Criteria;
     try {
-      await Scoretemp.updateScoretemp(id, req.body);
+      await ScoretempModle.updateScoretemp(id, req.body);
 
       // Remove criteria not present in the client data
       const currentCriteria = await CriteriaModle.getAll_ByScoretemp(id);
@@ -129,7 +129,6 @@ class ScoretempController {
           await CriteriaModle.deleteCriteria(criteriaId);
         }
       }
-
       // Process the criteria from the client
       for (const criteria of Criteria) {
         const form = {
@@ -137,7 +136,6 @@ class ScoretempController {
           Name: criteria.Name,
           FieldId: criteria.FieldId,
         };
-
         if (criteria._id) {
           await CriteriaModle.updateCriteria(criteria._id, form);
 
@@ -181,7 +179,6 @@ class ScoretempController {
           const { insertId: CriteriaId } = await CriteriaModle.createCriteria(
             form
           );
-          console.log(criteria.listCriteria);
           if (criteria.listCriteria) {
             for (const detail of criteria.listCriteria) {
               const formDetail = {
@@ -198,7 +195,6 @@ class ScoretempController {
           }
         }
       }
-
       res.status(200).json({ message: "Cập nhật phiếu thành công" });
     } catch (error) {
       console.log("Error", error);
@@ -209,7 +205,7 @@ class ScoretempController {
   deleteAll_Selected(req, res) {
     const ids = req.body;
     let idString = ids.map(String);
-    Scoretemp.deleteScoretemp(idString, (err, results) => {
+    ScoretempModle.deleteScoretemp(idString, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -219,7 +215,7 @@ class ScoretempController {
   }
   deleteOne_Scoretemp(req, res) {
     const id = req.params.id;
-    Scoretemp.deleteScoretemp(id, (err, results) => {
+    ScoretempModle.deleteScoretemp(id, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -230,7 +226,7 @@ class ScoretempController {
   restoreAll_Selected(req, res) {
     const ids = req.body;
     let idString = ids.map(String);
-    Scoretemp.restoreScoretemp(idString, (err, results) => {
+    ScoretempModle.restoreScoretemp(idString, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {
@@ -240,7 +236,7 @@ class ScoretempController {
   }
   restoreOne_Scoretemp(req, res) {
     const id = req.params.id;
-    Scoretemp.restoreScoretemp(id, (err, results) => {
+    ScoretempModle.restoreScoretemp(id, (err, results) => {
       if (err) {
         console.log("Error", err);
       } else {

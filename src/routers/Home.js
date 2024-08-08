@@ -1,5 +1,6 @@
 import express from "express";
 import Home from "../controllers/HomeController";
+import checkout from "../middlewares/checkout";
 const router = express.Router();
 // lấy địa chỉ
 router.get("/cities", Home.getAllCities);

@@ -21,9 +21,17 @@ const Criteria = {
       });
     });
   },
-  getCiteria_ByScoreTemId_FieldId(ScoreTempId, FieldId, callback) {
-    const query = `SELECT * FROM criteria WHERE ScoreTempId  = ? AND FieldId IN(?) AND IsDeleted = 0`;
-    connection.query(query, [ScoreTempId, FieldId], callback);
+  getCiteria_ByScoreTemId_FieldId(ScoreTempId, FieldId) {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM criteria WHERE ScoreTempId  = ? AND FieldId IN(?) AND IsDeleted = 0`;
+      connection.query(query, [ScoreTempId, FieldId], (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
   },
   createCriteria: (criteria) => {
     return new Promise((resolve, reject) => {
@@ -69,15 +77,14 @@ const Criteria = {
       });
     });
   },
-
-  //detail criteria
+  //detail criteria --> để chấm điểm 
   getDetailCriteria_ScorefileDetail_ByCriteriaId: (
     ScoreFileId,
     CriteriaId,
-    EmployeeId,
-    callback
+    EmployeeId
   ) => {
-    const query = `SELECT cd.*,
+    return new Promise((resolve, reject) => {
+      const query = `SELECT cd.*,
       c.Name AS NameCriteria,
       c._id AS IdCriteria,
       sd._id AS IdScoreFile_Detail,
@@ -85,10 +92,21 @@ const Criteria = {
       sd.TypeTotalValue AS TypeTotalValue,
       sd.CurrentStatusValue AS CurrentStatusValue
       FROM criteria_detail cd
-      JOIN criteria c ON cd.CriteriaId = c._id
-      JOIN scorefile_detail sd ON cd._id = sd.CriteriaDetailId
+       JOIN criteria c ON cd.CriteriaId = c._id
+       JOIN scorefile_detail sd ON cd._id = sd.CriteriaDetailId
       WHERE cd.IsDeleted = 0 AND sd.ScorefileId = ? AND cd.CriteriaId IN(?) AND sd.EmployeeId = ?`;
-    connection.query(query, [ScoreFileId, CriteriaId, EmployeeId], callback);
+      connection.query(
+        query,
+        [ScoreFileId, CriteriaId, EmployeeId],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
   },
   getOneCriteriaDetail: (id, callback) => {
     const query = `SELECT * FROM criteria_detail WHERE _id = ?`;
