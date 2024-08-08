@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import EmployeeModle from "../models/Employee";
 
 class EmployeeController {
+  // đăng nhập
   login(req, res) {
     const UserName = req.body.UserName;
     const PassWord = req.body.Password;
@@ -142,6 +143,7 @@ class EmployeeController {
       console.log("Error", error);
     }
   }
+  // đăng ký
   async createEmployee(req, res) {
     const Email = req.body.Email;
     const UserName = req.body.UserName;
@@ -173,6 +175,7 @@ class EmployeeController {
       console.log("Error", error);
     }
   }
+  // chỉnh sửa
   async updateEmployee(req, res) {
     const EmployeeId = req.params.id;
     const FieldIds = req.body.Fields;

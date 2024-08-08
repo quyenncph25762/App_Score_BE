@@ -114,7 +114,6 @@ class ScorefileController {
           NameScoreTemp: scorefile[0].NameScoreTemp,
           Criteria: [],
         };
-
         const CriteriaMap = new Map();
         results.forEach((element) => {
           if (!CriteriaMap.has(element.IdCriteria)) {

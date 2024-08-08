@@ -130,7 +130,7 @@ const Employee = {
     LEFT JOIN district ON employee.DistrictId = district._id
     LEFT JOIN ward ON employee.WardId = ward._id
     JOIN role ON employee.RoleId = role._id
-    WHERE employee.IsDeleted = 0 AND employee.RoleId = 1 AND employee.ApartmentId = 1`;
+    WHERE employee.IsDeleted = 0 AND employee.RoleId = 1 `;
       connection.query(query, (err, results) => {
         if (err) {
           reject(err);
